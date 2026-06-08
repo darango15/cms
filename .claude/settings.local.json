@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mysql -u root -e ' *)",
+      "Bash(mysql -u root cms_db2 -e \"SELECT 'users' t, COUNT\\(*\\) n FROM users; SELECT 'lms_courses' t, COUNT\\(*\\) n FROM lms_courses; SELECT 'lms_enrollments' t, COUNT\\(*\\) n FROM lms_enrollments; SELECT 'lms_lessons' t, COUNT\\(*\\) n FROM lms_lessons; SELECT 'lms_categories' t, COUNT\\(*\\) n FROM lms_categories; SELECT 'orders' t, COUNT\\(*\\) n FROM orders; SELECT 'admission_requests' t, COUNT\\(*\\) n FROM admission_requests;\")"
+    ]
+  }
+}

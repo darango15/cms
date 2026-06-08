@@ -1,0 +1,222 @@
+<?php
+
+namespace Plugins\Ecommerce\Controllers;
+
+use Core\Controller;
+use Core\Auth;
+use Plugins\Ecommerce\Models\Category;
+use Plugins\Ecommerce\Models\Product;
+
+class AdminProductController extends Controller
+{
+    private $productModel;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->productModel = new Product();
+    }
+
+    public function index()
+    {
+        $auth = Auth::getInstance();
+        $auth->requireAdmin('/manager/login');
+
+        // Filters from GET
+        $filters = [
+            'search'      => trim($_GET['search'] ?? ''),
+            'status'      => $_GET['status'] ?? '',
+            'category_id' => $_GET['category_id'] ?? '',
+        ];
+        $filters = array_filter($filters, fn($v) => $v !== '');
+
+        // Pagination
+        $page    = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $perPage = 10;
+        $offset  = ($page - 1) * $perPage;
+
+        $total      = $this->productModel->getTotalCountFiltered($filters);
+        $products   = $this->productModel->getPaginatedFiltered($perPage, $offset, $filters);
+        $totalPages = (int) ceil($total / $perPage);
+
+        $categories = (new Category())->all();
+
+        $this->view->render('plugins/ecommerce/views/admin/products', [
+            'title'       => 'Products',
+            'products'    => $products,
+            'categories'  => $categories,
+            'filters'     => $filters,
+            'currentPage' => $page,
+            'totalPages'  => $totalPages,
+            'total'       => $total,
+            'perPage'     => $perPage,
+        ], 'admin/views/layout');
+    }
+
+    public function create()
+    {
+        $auth = Auth::getInstance();
+        $auth->requireAdmin('/manager/login');
+
+        $this->view->render('plugins/ecommerce/views/admin/product-form', [
+            'title' => 'Create Product',
+            'product' => null
+        ], 'admin/views/layout');
+    }
+
+    public function store()
+    {
+        $auth = Auth::getInstance();
+        $auth->requireAdmin('/manager/login');
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $slug = !empty($_POST['slug']) ? $_POST['slug'] : $this->generateSlug($_POST['name']);
+
+            $originalSlug = $slug;
+            $counter = 1;
+            while ($this->productModel->findBySlug($slug)) {
+                $slug = $originalSlug . '-' . $counter;
+                $counter++;
+            }
+
+            $imagePath = $this->handleImageUpload($_POST['image_url'] ?? '', $_POST['current_image'] ?? '');
+
+            $data = [
+                'name'               => $_POST['name'],
+                'slug'               => $slug,
+                'description'        => $_POST['description'],
+                'price'              => $_POST['price'],
+                'renewal_price'      => $_POST['renewal_price'] ?? 0,
+                'stock'              => $_POST['stock'],
+                'category_id'        => !empty($_POST['category_id']) ? $_POST['category_id'] : null,
+                'subcategory_id'     => !empty($_POST['subcategory_id']) ? $_POST['subcategory_id'] : null,
+                'modality'           => $_POST['modality'] ?? null,
+                'imo_model_course_no'=> !empty($_POST['imo_model_course_no']) ? $_POST['imo_model_course_no'] : null,
+                'course_code'        => !empty($_POST['course_code']) ? $_POST['course_code'] : null,
+                'duration_hours'     => !empty($_POST['duration_hours']) ? floatval($_POST['duration_hours']) : 0,
+                'image'              => $imagePath,
+                'status'             => $_POST['status'],
+            ];
+
+            if ($this->productModel->create($data)) {
+                $this->redirect('/manager/products');
+            } else {
+                error_log("Product create failed for: " . ($_POST['name'] ?? ''));
+                $this->redirect('/manager/products/create');
+            }
+        } else {
+            $this->redirect('/manager/products/create');
+        }
+    }
+
+    public function edit($id)
+    {
+        $auth = Auth::getInstance();
+        $auth->requireAdmin('/manager/login');
+
+        $product = $this->productModel->find($id);
+
+        $this->view->render('plugins/ecommerce/views/admin/product-form', [
+            'title' => 'Edit Product',
+            'product' => $product
+        ], 'admin/views/layout');
+    }
+
+    public function update($id)
+    {
+        $auth = Auth::getInstance();
+        $auth->requireAdmin('/manager/login');
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $slug = !empty($_POST['slug']) ? $_POST['slug'] : $this->generateSlug($_POST['name']);
+            $imagePath = $this->handleImageUpload($_POST['image_url'] ?? '', $_POST['current_image'] ?? '');
+            $subcategoryId = !empty($_POST['subcategory_id']) ? intval($_POST['subcategory_id']) : null;
+
+            $this->productModel->update($id, [
+                'name' => $_POST['name'],
+                'slug' => $slug,
+                'description' => $_POST['description'],
+                'price' => $_POST['price'],
+                'renewal_price' => $_POST['renewal_price'] ?? 0,
+                'stock' => $_POST['stock'],
+                'category_id' => $_POST['category_id'] ?? null,
+                'subcategory_id' => $subcategoryId,
+                'modality' => $_POST['modality'] ?? null,
+                'imo_model_course_no' => $_POST['imo_model_course_no'] ?? null,
+                'course_code' => $_POST['course_code'] ?? null,
+                'duration_hours' => !empty($_POST['duration_hours']) ? floatval($_POST['duration_hours']) : 0,
+                'image' => $imagePath,
+                'status' => $_POST['status']
+            ]);
+
+            $this->redirect('/manager/products');
+        }
+    }
+
+    public function delete($id)
+    {
+        $auth = Auth::getInstance();
+        $auth->requireAdmin('/manager/login');
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->productModel->delete($id);
+        }
+
+        $this->redirect('/manager/products');
+    }
+    
+    private function generateSlug($name)
+    {
+        $slug = strtolower(trim($name));
+        $slug = preg_replace('/[^a-z0-9-]/', '-', $slug);
+        $slug = preg_replace('/-+/', '-', $slug);
+        return trim($slug, '-');
+    }
+    
+    private function handleImageUpload($imageUrl = '', $currentImage = '')
+    {
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            $allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            $mime = mime_content_type($_FILES['image']['tmp_name']);
+            if (!in_array($mime, $allowedMimes, true)) {
+                error_log("Rejected upload: invalid MIME type $mime");
+                return $currentImage;
+            }
+
+            $mimeToExt = [
+                'image/jpeg' => '.jpg',
+                'image/png'  => '.png',
+                'image/gif'  => '.gif',
+                'image/webp' => '.webp',
+            ];
+            $ext = $mimeToExt[$mime];
+
+            $projectRoot = dirname(dirname(dirname(__DIR__)));
+            $uploadDir = $projectRoot . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR;
+
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+
+            if (!is_writable($uploadDir)) {
+                error_log("Upload directory not writable: $uploadDir");
+                return $currentImage;
+            }
+
+            $fileName = time() . '_' . bin2hex(random_bytes(8)) . $ext;
+            $targetPath = $uploadDir . $fileName;
+
+            if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
+                return '/public/uploads/' . $fileName;
+            }
+
+            error_log("Failed to move uploaded file to $targetPath");
+        }
+
+        if (!empty($imageUrl)) {
+            return $imageUrl;
+        }
+
+        return $currentImage;
+    }
+}

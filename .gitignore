@@ -1,0 +1,14 @@
+# Environment — never versionar
+.env
+
+# Dependencias
+vendor/
+
+# Cache y logs
+cache/*.flag
+cache/*.json
+logs/*.log
+
+# Uploads de usuarios
+public/uploads/*
+!public/uploads/.gitkeep
