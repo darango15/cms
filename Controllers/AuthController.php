@@ -32,21 +32,21 @@ class AuthController
         $user = $this->user->verifyPassword($email, $password);
 
         if ($user) {
-            session_start();
+            if (session_status() === PHP_SESSION_NONE) session_start();
             $_SESSION['user_logged_in'] = true;
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['name'];
             $_SESSION['user_email'] = $user['email'];
             $_SESSION['user_role'] = $user['role'];
 
-            // Update last login
             $this->user->updateLastLogin($user['id']);
 
-            // Redirect to my-account
-            header('Location: /my-account');
+            // Si estamos en el subdominio LMS redirigir al dashboard del LMS
+            $redirect = (defined('IS_LMS') && IS_LMS) ? '/dashboard' : '/my-account';
+            header('Location: ' . $redirect);
             exit;
         } else {
-            // Login failed
+            if (session_status() === PHP_SESSION_NONE) session_start();
             $_SESSION['login_error'] = 'Email o contraseña incorrectos';
             header('Location: /login');
             exit;
@@ -55,9 +55,10 @@ class AuthController
 
     public function logout()
     {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) session_start();
         session_destroy();
-        header('Location: /');
+        $redirect = (defined('IS_LMS') && IS_LMS) ? '/' : '/';
+        header('Location: ' . $redirect);
         exit;
     }
 
@@ -95,8 +96,8 @@ class AuthController
 
             // Auto login
             $user = $this->user->findByEmail($email);
-            
-            session_start();
+
+            if (session_status() === PHP_SESSION_NONE) session_start();
             $_SESSION['user_logged_in'] = true;
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['name'];
@@ -107,6 +108,7 @@ class AuthController
             exit;
 
         } catch (\Exception $e) {
+            if (session_status() === PHP_SESSION_NONE) session_start();
             $_SESSION['register_error'] = $e->getMessage();
             header('Location: /register');
             exit;

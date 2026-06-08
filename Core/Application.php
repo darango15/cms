@@ -29,6 +29,13 @@ class Application
         ini_set('session.cookie_samesite', 'Lax');
         ini_set('session.use_strict_mode', 1);
 
+        // Share session across subdomains (elearning.* ↔ main site)
+        $siteHost = parse_url(Config::get('site.url', ''), PHP_URL_HOST) ?? '';
+        if ($siteHost) {
+            // Leading dot = applies to all subdomains (e.g. .cms.test, .pamel.edu.pa)
+            ini_set('session.cookie_domain', '.' . $siteHost);
+        }
+
         // Initialize components
         $this->router = new Router();
         $this->pluginManager = PluginManager::getInstance();
