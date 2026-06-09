@@ -2,7 +2,7 @@
     <!-- Hero Section -->
     <section class="hero-gradient text-white py-60 relative overflow-hidden">
         <!-- Background Image -->
-        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/public/assets/images/slide/SLIDE9.jpg');"></div>
+        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/assets/images/slide/SLIDE9.jpg');"></div>
         
         <!-- Gradient Overlay -->
         <div class="absolute inset-0 bg-gradient-to-r from-cyan-600/80 via-blue-700/60 to-cyan-700/80"></div>
@@ -39,7 +39,7 @@
                     <div class="grid lg:grid-cols-2 gap-0">
                         <!-- Image Side -->
                         <div class="relative min-h-[500px] lg:h-auto overflow-hidden group">
-                            <img src="/public/assets/images/company-policy1.jpg" alt="Maritime Control Panel" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                            <img src="/assets/images/company-policy1.jpg" alt="Maritime Control Panel" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                             <div class="absolute inset-0 bg-gradient-to-t from-cyan-900/60 via-transparent to-transparent"></div>
                             <div class="absolute bottom-8 left-8 text-white">
                                 <p class="text-sm font-bold uppercase tracking-widest opacity-80 mb-2">PAMEL S.A.</p>
@@ -61,7 +61,7 @@
                             <div class="relative z-10">
                                 <!-- Logo Centered -->
                                 <div class="mb-10 flex justify-center">
-                                    <img src="/public/assets/images/logo.png" alt="PAMEL Logo" class="h-24">
+                                    <img src="/assets/images/logo.png" alt="PAMEL Logo" class="h-24">
                                 </div>
 
                                 <h2 class="text-3xl font-extrabold text-blue-700 uppercase tracking-wider mb-8 pb-2 border-b-2 border-blue-50 text-center">
@@ -142,7 +142,7 @@
                             </p>
                         </div>
                         <div class="flex-shrink-0">
-                            <img src="/public/assets/images/ISO-9001_160x128px.png" alt="ISO 9001" class="bg-white p-4 rounded-2xl shadow-xl h-32">
+                            <img src="/assets/images/ISO-9001_160x128px.png" alt="ISO 9001" class="bg-white p-4 rounded-2xl shadow-xl h-32">
                         </div>
                     </div>
                 </div>

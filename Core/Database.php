@@ -69,9 +69,6 @@ class Database
         $placeholders = ':' . implode(', :', array_keys($data));
         
         $sql = "INSERT INTO {$table} ({$columns}) VALUES ({$placeholders})";
-        error_log("Insert SQL: " . $sql);
-        error_log("Insert Data: " . print_r($data, true));
-        
         $result = $this->query($sql, $data);
         
         if ($result === false) {

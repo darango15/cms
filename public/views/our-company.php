@@ -2,7 +2,7 @@
     <!-- Hero Section -->
     <section class="hero-gradient text-white py-60 relative overflow-hidden">
         <!-- Background Image -->
-        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/public/assets/images/slide/SLIDE11.jpg');"></div>
+        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/assets/images/slide/SLIDE11.jpg');"></div>
         
         <!-- Gradient Overlay -->
         <div class="absolute inset-0 bg-gradient-to-r from-cyan-600/80 via-blue-700/60 to-cyan-700/80"></div>
@@ -53,11 +53,11 @@
                     <div class="relative">
                         <div class="bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl p-6 shadow-2xl transform rotate-3 hover:rotate-0 transition duration-300">
                             <div class="bg-white rounded-xl overflow-hidden">
-                                <img src="/public/assets/images/location.webp" 
+                                <img src="/assets/images/location.webp" 
                                      alt="PAMEL Training Center" 
                                      class="w-full h-52 object-cover">
                                 <div class="p-5 text-center">
-                                    <img src="/public/assets/images/logo.png" 
+                                    <img src="/assets/images/logo.png" 
                                          alt="PAMEL Logo" 
                                          class="h-14 mx-auto mb-3">
                                     <p class="text-gray-600 text-sm font-medium">Panama Maritime E-Learning (PAMEL), S.A.</p>
@@ -120,10 +120,10 @@
                     <!-- Images Section -->
                     <div class="grid md:grid-cols-2 gap-8 mb-12">
                         <div class="bg-white/10 backdrop-blur-lg rounded-xl p-4 border border-white/20 hover:shadow-2xl transition duration-300">
-                            <img src="/public/assets/images/location.webp" alt="PAMEL Training Facility" class="w-full h-64 object-cover rounded-lg mb-4">
+                            <img src="/assets/images/location.webp" alt="PAMEL Training Facility" class="w-full h-64 object-cover rounded-lg mb-4">
                         </div>
                         <div class="bg-white/10 backdrop-blur-lg rounded-xl p-4 border border-white/20 hover:shadow-2xl transition duration-300">
-                            <img src="/public/assets/images/location-pamel-section1.jpg" alt="Global Reach - Education without Borders" class="w-full h-64 object-cover rounded-lg mb-4">
+                            <img src="/assets/images/location-pamel-section1.jpg" alt="Global Reach - Education without Borders" class="w-full h-64 object-cover rounded-lg mb-4">
                             <h3 class="text-xl font-bold text-center">PAMEL - HEADQUARTERS</h3>
                         </div>
                     </div>

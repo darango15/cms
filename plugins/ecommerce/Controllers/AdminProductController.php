@@ -207,7 +207,7 @@ class AdminProductController extends Controller
             $targetPath = $uploadDir . $fileName;
 
             if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
-                return '/public/uploads/' . $fileName;
+                return '/uploads/' . $fileName;
             }
 
             error_log("Failed to move uploaded file to $targetPath");

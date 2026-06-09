@@ -39,18 +39,14 @@ class Router
 
     public function dispatch($uri, $method)
     {
-        // DEBUG
-        error_log("Dispatching URI: $uri, Method: $method, Total routes: " . count($this->routes));
-        
         foreach ($this->routes as $route) {
             if ($route['method'] !== 'ANY' && $route['method'] !== $method) {
                 continue;
             }
 
             $pattern = $this->convertToRegex($route['path']);
-            
+
             if (preg_match($pattern, $uri, $matches)) {
-                error_log("MATCHED route: {$route['path']}");
                 array_shift($matches); // Remove full match
                 
                 // Extract only numeric keys (positional parameters)
@@ -65,8 +61,6 @@ class Router
             }
         }
 
-        // 404 Not Found
-        error_log("NO MATCH for URI: $uri");
         http_response_code(404);
         echo "404 - Page Not Found";
         return;

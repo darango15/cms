@@ -2,7 +2,7 @@
     <div class="max-w-md w-full">
         <div class="bg-white rounded-2xl shadow-2xl p-8">
             <div class="text-center mb-8">
-                <img src="/public/assets/images/logo.png" alt="PAMEL Logo" class="h-20 mx-auto mb-4">
+                <img src="/assets/images/logo.png" alt="PAMEL Logo" class="h-20 mx-auto mb-4">
                 <h2 class="text-3xl font-extrabold text-gray-900"><?php echo __('auth.login.title'); ?></h2>
                 <p class="mt-2 text-sm text-gray-600"><?php echo __('auth.login.subtitle'); ?></p>
             </div>

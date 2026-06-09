@@ -2,7 +2,7 @@
     <!-- Hero Section -->
     <section class="hero-gradient text-white py-60 relative overflow-hidden">
         <!-- Background Image -->
-        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/public/assets/images/slide/SLIDE6.jpg');"></div>
+        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/assets/images/slide/SLIDE6.jpg');"></div>
         
         <!-- Gradient Overlay -->
         <div class="absolute inset-0 bg-gradient-to-r from-cyan-600/80 via-blue-700/60 to-cyan-700/80"></div>
@@ -61,7 +61,7 @@
                             <p class="text-sm text-blue-100"><?php echo __('gcl_iso.main.card.certified_by'); ?></p>
                             <p class="text-2xl font-bold"><?php echo __('gcl_iso.hero.title'); ?></p>
                         </div>
-                        <a href="/public/assets/documents/PAMEL-2027-02-22-certificate-60Q20885-800304031.pdf" target="_blank" class="inline-block bg-white text-blue-600 px-8 py-3 rounded-xl font-bold hover:bg-blue-50 transition transform hover:scale-105 shadow-lg">
+                        <a href="/assets/documents/PAMEL-2027-02-22-certificate-60Q20885-800304031.pdf" target="_blank" class="inline-block bg-white text-blue-600 px-8 py-3 rounded-xl font-bold hover:bg-blue-50 transition transform hover:scale-105 shadow-lg">
                             <i class="fas fa-download mr-2"></i><?php echo __('gcl_iso.main.card.download'); ?>
                         </a>
                     </div>

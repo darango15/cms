@@ -2,7 +2,7 @@
     <!-- Hero Section -->
     <section class="hero-gradient text-white py-60 relative overflow-hidden">
         <!-- Background Image -->
-        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/public/assets/images/slide/SLIDE2.jpg');"></div>
+        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/assets/images/slide/SLIDE2.jpg');"></div>
         
         <!-- Gradient Overlay -->
         <div class="absolute inset-0 bg-gradient-to-r from-cyan-600/80 via-blue-700/60 to-cyan-700/80"></div>
@@ -49,7 +49,7 @@
                     </div>
                     
                     <div class="bg-white rounded-2xl shadow-xl p-8">
-                        <img src="/public/assets/images/base-ubicacion.jpg" alt="LIMR Location" class="w-full rounded-lg shadow-md mb-4">
+                        <img src="/assets/images/base-ubicacion.jpg" alt="LIMR Location" class="w-full rounded-lg shadow-md mb-4">
                         <p class="text-center text-gray-600 font-semibold"><?php echo __('limr.who.tagline'); ?></p>
                     </div>
                 </div>

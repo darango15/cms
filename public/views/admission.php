@@ -2,7 +2,7 @@
     <!-- Hero Section -->
     <section class="hero-gradient text-white py-48 relative overflow-hidden">
         <!-- Background Image -->
-        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/public/assets/images/barco-ourcompany.jpg');"></div>
+        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/assets/images/barco-ourcompany.jpg');"></div>
         
         <!-- Gradient Overlay -->
         <div class="absolute inset-0 bg-gradient-to-r from-cyan-600/80 via-blue-600/80 to-cyan-700/80"></div>

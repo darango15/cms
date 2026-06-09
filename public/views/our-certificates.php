@@ -2,7 +2,7 @@
     <!-- Hero Section -->
     <section class="hero-gradient text-white py-48 relative overflow-hidden">
         <!-- Background Image -->
-        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/public/assets/images/barco-ourcompany.jpg');"></div>
+        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/assets/images/barco-ourcompany.jpg');"></div>
         
         <!-- Gradient Overlay -->
         <div class="absolute inset-0 bg-gradient-to-r from-cyan-600/80 via-blue-600/80 to-cyan-700/80"></div>
@@ -38,7 +38,7 @@
                 <div class="bg-white rounded-2xl shadow-2xl p-8 mb-12">
                     <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center"><?php echo __('certificates.iso_section.title'); ?></h2>
                     <div class="flex justify-center mb-6">
-                        <img src="/public/assets/images/certificado_ISOexp2027.jpg" alt="ISO 9001:2015 Certificate" class=" h-auto rounded-lg shadow-lg">
+                        <img src="/assets/images/certificado_ISOexp2027.jpg" alt="ISO 9001:2015 Certificate" class=" h-auto rounded-lg shadow-lg">
                     </div>
                     <p class="text-center text-gray-600 italic"><?php echo __('certificates.iso_section.expiry'); ?></p>
                 </div>

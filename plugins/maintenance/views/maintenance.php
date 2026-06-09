@@ -40,7 +40,7 @@
 
         <!-- Logo — grande y centrado -->
         <div class="mb-10">
-            <img src="/public/assets/images/logo.png"
+            <img src="/assets/images/logo.png"
                  alt="PAMEL"
                  class="h-40 w-auto mx-auto"
                  onerror="this.replaceWith(Object.assign(document.createElement('span'), {className:'text-5xl font-black text-slate-800', textContent:'PAMEL'}))">

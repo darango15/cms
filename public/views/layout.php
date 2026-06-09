@@ -98,7 +98,7 @@
                 <!-- Logo -->
                 <a href="/" class="flex items-center space-x-3 hover:opacity-80 transition">
                     <div class="relative group">
-                        <img src="/public/assets/images/logo.png" alt="PAMEL Logo" class="h-16">
+                        <img src="/assets/images/logo.png" alt="PAMEL Logo" class="h-16">
                     </div>
                     <div>
                         <h1 class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-700 bg-clip-text text-transparent">
@@ -252,7 +252,7 @@
             <!-- Header -->
             <div class="p-6 border-b flex justify-between items-center bg-gradient-to-r from-cyan-600 to-blue-700 text-white shadow-lg">
                 <div class="flex items-center space-x-3">
-                    <img src="/public/assets/images/logo.png" alt="Logo" class="h-10 bg-white p-1 rounded-lg">
+                    <img src="/assets/images/logo.png" alt="Logo" class="h-10 bg-white p-1 rounded-lg">
                     <div>
                         <h2 class="text-xl font-bold leading-none">PAMEL</h2>
                         <p class="text-[9px] uppercase tracking-widest opacity-80 mt-1"><?php echo __('nav.maritime_center'); ?></p>
@@ -366,7 +366,7 @@
                 <!-- PAMEL Logo & Social -->
                 <div>
                     <div class="flex items-center space-x-3 mb-4">
-                        <img src="/public/assets/images/LogoSelloPamel-EditedWhite.png" alt="PAMEL Logo" class="h-48">
+                        <img src="/assets/images/LogoSelloPamel-EditedWhite.png" alt="PAMEL Logo" class="h-48">
                     </div>
                     <h3 class="text-xl font-bold mb-2"><?php echo __('footer.training_center'); ?></h3>
                     <div class="flex space-x-3 mt-4">
@@ -397,7 +397,7 @@
                     </ul>
                     <!-- ISO Certification Logo -->
                     <div class="mt-4">
-                        <img src="/public/assets/images/ISO-9001_160x128px.png" alt="ISO 9001 Certification" class="bg-white p-2 rounded">
+                        <img src="/assets/images/ISO-9001_160x128px.png" alt="ISO 9001 Certification" class="bg-white p-2 rounded">
                     </div>
                 </div>
 
@@ -407,7 +407,7 @@
                         <?php echo __('footer.approval'); ?>
                     </p>
                     <div class="mt-4">
-                        <img src="/public/assets/images/AMP-LOGO-2-01-resized-trans.png" alt="Autoridad Marítima de Panamá">
+                        <img src="/assets/images/AMP-LOGO-2-01-resized-trans.png" alt="Autoridad Marítima de Panamá">
                     </div>
                 </div>
 

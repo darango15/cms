@@ -2,10 +2,10 @@
 <section class="hero-gradient text-white py-48 relative overflow-hidden">
     <!-- Background Image Slider -->
     <div id="hero-slider" class="absolute inset-0">
-        <div class="hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-100" style="background-image: url('/public/assets/images/slide/SLIDE1.jpg');"></div>
-        <div class="hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" style="background-image: url('/public/assets/images/slide/SLIDE4.jpg');"></div>
-        <div class="hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" style="background-image: url('/public/assets/images/slide/SLIDE7.jpg');"></div>
-        <div class="hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" style="background-image: url('/public/assets/images/slide/SLIDE10.jpg');"></div>
+        <div class="hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-100" style="background-image: url('/assets/images/slide/SLIDE1.jpg');"></div>
+        <div class="hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" style="background-image: url('/assets/images/slide/SLIDE4.jpg');"></div>
+        <div class="hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" style="background-image: url('/assets/images/slide/SLIDE7.jpg');"></div>
+        <div class="hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" style="background-image: url('/assets/images/slide/SLIDE10.jpg');"></div>
     </div>
     
     <!-- Gradient Overlay -->

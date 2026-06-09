@@ -17,7 +17,7 @@
             <div class="mx-auto w-full max-w-sm lg:w-96">
                 <!-- Header with Logo -->
                 <div class="text-center">
-                    <img class="h-40 w-auto mx-auto" src="/public/assets/images/logo.png" alt="Company Logo">
+                    <img class="h-40 w-auto mx-auto" src="/assets/images/logo.png" alt="Company Logo">
                     <h2 class="mt-6 text-3xl font-extrabold text-gray-900">
                         Administración
                     </h2>
@@ -95,7 +95,7 @@
                 Para imagen local usa: src="/assets/images/tu-imagen.jpg"
             -->
             <img class="absolute inset-0 h-full w-full object-cover" 
-                 src="/public/assets/images/bnr-login-admin.png" 
+                 src="/assets/images/bnr-login-admin.png" 
                  alt="Background Image">
 
         </div>
