@@ -523,7 +523,7 @@ return [
         'privacy' => 'Privacy Policy',
         'cookies' => 'Cookies Policy',
         'terms' => 'Terms & Conditions',
-        'approval' => 'Maritime Training Center approved by the Panama Maritime Authority by means of Resolution No. DGGM-CFM-050-2025 of September 12th, 2025. Resolution No. DGGM-FAD-012-2025 of September 12th, 2025.'
+        'approval' => 'Maritime Training Center approved by the Panama Maritime Authority by means of Resolution No. DGGM-CFM-016-2026 of May 25th, 2026.'
     ],
     'shop' => [
         'title' => 'Shop',
