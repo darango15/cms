@@ -93,19 +93,41 @@ class User extends Model
         return false;
     }
 
-    public function paginate($page = 1, $perPage = 10)
+    public function paginate($page = 1, $perPage = 10, $filters = [])
     {
-        $offset = ($page - 1) * $perPage;
-        $perPage = (int)$perPage;
-        $offset = (int)$offset;
-        
-        $sql = "SELECT * FROM {$this->table} ORDER BY created_at DESC LIMIT $perPage OFFSET $offset";
-        return $this->db->fetchAll($sql);
+        $offset = (int)(($page - 1) * $perPage);
+        [$where, $params] = $this->buildFilters($filters);
+        $sql = "SELECT * FROM {$this->table} $where ORDER BY created_at DESC LIMIT " . (int)$perPage . " OFFSET $offset";
+        return $this->db->fetchAll($sql, $params);
     }
 
-    public function count()
+    public function count($filters = [])
     {
-        $result = $this->db->fetchOne("SELECT COUNT(*) as total FROM {$this->table}");
+        [$where, $params] = $this->buildFilters($filters);
+        $result = $this->db->fetchOne("SELECT COUNT(*) as total FROM {$this->table} $where", $params);
         return $result ? (int)$result['total'] : 0;
+    }
+
+    private function buildFilters($filters)
+    {
+        $conditions = [];
+        $params     = [];
+
+        if (!empty($filters['search'])) {
+            $conditions[] = "(name LIKE ? OR email LIKE ?)";
+            $params[] = '%' . $filters['search'] . '%';
+            $params[] = '%' . $filters['search'] . '%';
+        }
+        if (!empty($filters['role'])) {
+            $conditions[] = "role = ?";
+            $params[] = $filters['role'];
+        }
+        if (!empty($filters['status'])) {
+            $conditions[] = "status = ?";
+            $params[] = $filters['status'];
+        }
+
+        $where = $conditions ? 'WHERE ' . implode(' AND ', $conditions) : '';
+        return [$where, $params];
     }
 }

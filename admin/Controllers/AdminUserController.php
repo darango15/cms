@@ -23,19 +23,27 @@ class AdminUserController extends Controller
         $auth = Auth::getInstance();
         $auth->requireAdmin('/manager/login');
 
-        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $page    = max(1, (int)($_GET['page'] ?? 1));
         $perPage = 10;
+        $search  = trim($_GET['search'] ?? '');
+        $role    = $_GET['role']   ?? '';
+        $status  = $_GET['status'] ?? '';
 
-        $users = $this->userModel->paginate($page, $perPage);
-        $totalUsers = $this->userModel->count();
-        $totalPages = ceil($totalUsers / $perPage);
+        $filters = array_filter(['search' => $search, 'role' => $role, 'status' => $status]);
+
+        $users      = $this->userModel->paginate($page, $perPage, $filters);
+        $totalUsers = $this->userModel->count($filters);
+        $totalPages = max(1, (int)ceil($totalUsers / $perPage));
 
         $this->view->render('admin/views/users/index', [
-            'title' => 'Users',
-            'users' => $users,
-            'currentPage' => $page,
-            'totalPages' => $totalPages,
-            'totalUsers' => $totalUsers
+            'title'        => 'Users',
+            'users'        => $users,
+            'currentPage'  => $page,
+            'totalPages'   => $totalPages,
+            'totalUsers'   => $totalUsers,
+            'search'       => $search,
+            'roleFilter'   => $role,
+            'statusFilter' => $status,
         ], 'admin/views/layout');
     }
 

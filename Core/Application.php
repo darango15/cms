@@ -30,9 +30,17 @@ class Application
         ini_set('session.use_strict_mode', 1);
 
         // Share session across subdomains (elearning.* ↔ main site)
+        // Only on real production domains — skip localhost/.test/.local to avoid cookie issues
         $siteHost = parse_url(Config::get('site.url', ''), PHP_URL_HOST) ?? '';
-        if ($siteHost) {
-            // Leading dot = applies to all subdomains (e.g. .cms.test, .pamel.edu.pa)
+        $devSuffixes = ['.test', '.local', '.dev', 'localhost'];
+        $isLocalDev  = ($siteHost === 'localhost');
+        foreach ($devSuffixes as $suffix) {
+            if (substr($siteHost, -strlen($suffix)) === $suffix) {
+                $isLocalDev = true;
+                break;
+            }
+        }
+        if ($siteHost && !$isLocalDev) {
             ini_set('session.cookie_domain', '.' . $siteHost);
         }
 
