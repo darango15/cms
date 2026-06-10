@@ -24,7 +24,8 @@ foreach ($c in $candidates) {
 }
 
 if (-not $MYSQLDUMP) {
-    $MYSQLDUMP = (Get-Command mysqldump -ErrorAction SilentlyContinue)?.Source
+    $cmd = Get-Command mysqldump -ErrorAction SilentlyContinue
+    if ($cmd) { $MYSQLDUMP = $cmd.Source }
 }
 
 if (-not $MYSQLDUMP) {

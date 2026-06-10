@@ -65,9 +65,9 @@ class Application
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $method = $_SERVER['REQUEST_METHOD'];
 
-        // Remove base path if CMS is in subdirectory
-        $basePath = parse_url(Config::get('site.url'), PHP_URL_PATH);
-        if ($basePath && strpos($uri, $basePath) === 0) {
+        // Remove base path only when CMS lives in a subdirectory (e.g. /cms/)
+        $basePath = rtrim(parse_url(Config::get('site.url'), PHP_URL_PATH) ?? '', '/');
+        if ($basePath !== '' && strpos($uri, $basePath) === 0) {
             $uri = substr($uri, strlen($basePath));
         }
 
