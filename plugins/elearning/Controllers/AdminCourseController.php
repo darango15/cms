@@ -32,12 +32,14 @@ class AdminCourseController extends BaseController
         // Fetch all courses with teacher and category info
         $courses = $this->db->fetchAll(
             "SELECT c.*, u.name as teacher_name, cat.name as category_name,
+                    p.name as product_name, p.status as product_status, p.course_code,
                     (SELECT COUNT(*) FROM lms_enrollments WHERE course_id = c.id) as student_count,
                     (SELECT COUNT(*) FROM lms_lessons WHERE course_id = c.id) as lesson_count,
                     (SELECT COUNT(*) FROM lms_quizzes WHERE course_id = c.id) as quiz_count
              FROM lms_courses c
              LEFT JOIN users u ON u.id = c.teacher_id
              LEFT JOIN lms_categories cat ON cat.id = c.category_id
+             LEFT JOIN products p ON p.id = c.product_id
              ORDER BY c.created_at DESC"
         );
 
@@ -54,14 +56,16 @@ class AdminCourseController extends BaseController
     {
         $this->requireAuth();
         
-        $view = new View();
-        $teachers = $this->db->fetchAll("SELECT id, name FROM users WHERE role IN ('admin', 'teacher')");
+        $view       = new View();
+        $teachers   = $this->db->fetchAll("SELECT id, name FROM users WHERE role IN ('admin', 'teacher')");
         $categories = $this->db->fetchAll("SELECT id, name FROM lms_categories ORDER BY name ASC");
+        $products   = $this->db->fetchAll("SELECT id, name, course_code, status FROM products ORDER BY name ASC");
 
         $view->render('admin/views/lms/courses/create', [
             'title'      => 'Crear Nuevo Curso',
             'teachers'   => $teachers,
             'categories' => $categories,
+            'products'   => $products,
         ], 'admin/views/layout');
     }
 
@@ -79,18 +83,21 @@ class AdminCourseController extends BaseController
         $title = $_POST['title'] ?? '';
         $slug = $_POST['slug'] ?: $this->generateSlug($title);
         
+        $productId = !empty($_POST['product_id']) ? (int)$_POST['product_id'] : null;
+
         $data = [
-            'teacher_id'   => (int)($_POST['teacher_id'] ?? 0),
-            'category_id'  => (int)($_POST['category_id'] ?? 0),
-            'title'        => $title,
-            'slug'         => $slug,
-            'description'  => $_POST['description'] ?? '',
-            'image'        => $_POST['image'] ?? '',
-            'level'        => $_POST['level'] ?? 'beginner',
-            'status'       => $_POST['status'] ?? 'draft',
-            'price'        => (float)($_POST['price'] ?? 0.00),
+            'teacher_id'      => (int)($_POST['teacher_id'] ?? 0),
+            'category_id'     => (int)($_POST['category_id'] ?? 0),
+            'product_id'      => $productId,
+            'title'           => $title,
+            'slug'            => $slug,
+            'description'     => $_POST['description'] ?? '',
+            'image'           => $_POST['image'] ?? '',
+            'level'           => $_POST['level'] ?? 'beginner',
+            'status'          => $_POST['status'] ?? 'draft',
+            'price'           => (float)($_POST['price'] ?? 0.00),
             'pass_percentage' => (int)($_POST['pass_percentage'] ?? 70),
-            'created_at'   => date('Y-m-d H:i:s')
+            'created_at'      => date('Y-m-d H:i:s'),
         ];
 
         $this->db->insert('lms_courses', $data);
@@ -111,8 +118,19 @@ class AdminCourseController extends BaseController
             $this->redirect('/manager/lms/courses');
         }
 
-        $teachers = $this->db->fetchAll("SELECT id, name FROM users WHERE role IN ('admin', 'teacher')");
+        $teachers   = $this->db->fetchAll("SELECT id, name FROM users WHERE role IN ('admin', 'teacher')");
         $categories = $this->db->fetchAll("SELECT id, name FROM lms_categories ORDER BY name ASC");
+        $products   = $this->db->fetchAll(
+            "SELECT id, name, course_code, status FROM products ORDER BY name ASC"
+        );
+        // Enrich course with linked product info
+        if (!empty($course['product_id'])) {
+            $prod = $this->db->fetch("SELECT name, status FROM products WHERE id = ?", [$course['product_id']]);
+            if ($prod) {
+                $course['product_name']   = $prod['name'];
+                $course['product_status'] = $prod['status'];
+            }
+        }
 
         $view = new View();
         $view->render('admin/views/lms/courses/edit', [
@@ -120,6 +138,7 @@ class AdminCourseController extends BaseController
             'course'     => $course,
             'teachers'   => $teachers,
             'categories' => $categories,
+            'products'   => $products,
         ], 'admin/views/layout');
     }
 
@@ -167,18 +186,21 @@ class AdminCourseController extends BaseController
             $this->redirect('/manager/lms/courses');
         }
 
+        $productId = !empty($_POST['product_id']) ? (int)$_POST['product_id'] : null;
+
         $data = [
-            'teacher_id'   => (int)($_POST['teacher_id'] ?? 0),
-            'category_id'  => (int)($_POST['category_id'] ?? 0),
-            'title'        => $_POST['title'] ?? '',
-            'slug'         => $_POST['slug'] ?? '',
-            'description'  => $_POST['description'] ?? '',
-            'image'        => $_POST['image'] ?? '',
-            'level'        => $_POST['level'] ?? 'beginner',
-            'status'       => $_POST['status'] ?? 'draft',
-            'price'        => (float)($_POST['price'] ?? 0.00),
+            'teacher_id'      => (int)($_POST['teacher_id'] ?? 0),
+            'category_id'     => (int)($_POST['category_id'] ?? 0),
+            'product_id'      => $productId,
+            'title'           => $_POST['title'] ?? '',
+            'slug'            => $_POST['slug'] ?? '',
+            'description'     => $_POST['description'] ?? '',
+            'image'           => $_POST['image'] ?? '',
+            'level'           => $_POST['level'] ?? 'beginner',
+            'status'          => $_POST['status'] ?? 'draft',
+            'price'           => (float)($_POST['price'] ?? 0.00),
             'pass_percentage' => (int)($_POST['pass_percentage'] ?? 70),
-            'updated_at'   => date('Y-m-d H:i:s')
+            'updated_at'      => date('Y-m-d H:i:s'),
         ];
 
         $this->db->update('lms_courses', $data, 'id = :id', ['id' => $id]);

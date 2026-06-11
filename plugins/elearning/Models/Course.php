@@ -12,41 +12,72 @@ class Course extends Model
     public const STATUS_PUBLISHED = 'published';
     public const STATUS_ARCHIVED  = 'archived';
 
+    // Columns pulled from linked product when present
+    private const PRODUCT_COLS = "
+        p.id            AS product_id,
+        p.name          AS product_name,
+        p.status        AS product_status,
+        COALESCE(p.price, c.price)          AS price,
+        p.course_code,
+        p.imo_model_course_no,
+        p.duration_hours,
+        p.modality,
+        p.renewal_price,
+        COALESCE(p.image, c.image)          AS image
+    ";
+
     /**
-     * Get published courses with teacher and category data.
+     * Visibility rule: published + (no linked product OR linked product is active).
+     */
+    private function visibilityWhere(): string
+    {
+        return "c.status = 'published' AND (c.product_id IS NULL OR p.status = 'active')";
+    }
+
+    /**
+     * GET /api/v1/courses — paginated list of visible courses.
      */
     public function published($page = 1, $perPage = 12, $categoryId = null)
     {
-        $where = "c.status = 'published'";
+        $where  = $this->visibilityWhere();
         $params = [];
 
         if ($categoryId) {
-            $where .= " AND c.category_id = ?";
+            $where   .= " AND c.category_id = ?";
             $params[] = $categoryId;
         }
 
         $offset = ($page - 1) * $perPage;
 
         $totalResult = $this->db->fetchOne(
-            "SELECT COUNT(*) as t FROM {$this->table} c WHERE {$where}",
+            "SELECT COUNT(*) AS t
+             FROM {$this->table} c
+             LEFT JOIN products p ON p.id = c.product_id
+             WHERE {$where}",
             $params
         );
-        $total = $totalResult['t'] ?? 0;
+        $total = (int) ($totalResult['t'] ?? 0);
 
         $data = $this->db->fetchAll(
-            "SELECT c.*, u.name AS teacher_name, cat.name AS category_name
+            "SELECT c.*,
+                    " . self::PRODUCT_COLS . ",
+                    u.name  AS teacher_name,
+                    cat.name AS category_name,
+                    (SELECT COUNT(*) FROM lms_lessons WHERE course_id = c.id) AS lesson_count,
+                    (SELECT COUNT(*) FROM lms_quizzes WHERE course_id = c.id) AS quiz_count
              FROM {$this->table} c
-             LEFT JOIN users u ON u.id = c.teacher_id
+             LEFT JOIN products p        ON p.id   = c.product_id
+             LEFT JOIN users u           ON u.id   = c.teacher_id
              LEFT JOIN lms_categories cat ON cat.id = c.category_id
              WHERE {$where}
              ORDER BY c.created_at DESC
-             LIMIT $perPage OFFSET $offset",
+             LIMIT {$perPage} OFFSET {$offset}",
             $params
         );
 
         return [
             'data'         => $data,
-            'total'        => (int) $total,
+            'total'        => $total,
             'per_page'     => $perPage,
             'current_page' => $page,
             'last_page'    => (int) ceil($total / $perPage),
@@ -54,17 +85,41 @@ class Course extends Model
     }
 
     /**
-     * Find a course by its slug.
+     * Find a single course by ID (only if visible).
+     */
+    public function find($id)
+    {
+        return $this->db->fetchOne(
+            "SELECT c.*,
+                    " . self::PRODUCT_COLS . ",
+                    u.name    AS teacher_name,
+                    u.bio     AS teacher_bio,
+                    cat.name  AS category_name
+             FROM {$this->table} c
+             LEFT JOIN products p        ON p.id   = c.product_id
+             LEFT JOIN users u           ON u.id   = c.teacher_id
+             LEFT JOIN lms_categories cat ON cat.id = c.category_id
+             WHERE c.id = ?",
+            [$id]
+        );
+    }
+
+    /**
+     * Find a course by its slug (only if visible).
      */
     public function findBySlug($slug)
     {
         return $this->db->fetchOne(
-            "SELECT c.*, u.name AS teacher_name, u.bio AS teacher_bio,
-                    cat.name AS category_name
+            "SELECT c.*,
+                    " . self::PRODUCT_COLS . ",
+                    u.name    AS teacher_name,
+                    u.bio     AS teacher_bio,
+                    cat.name  AS category_name
              FROM {$this->table} c
-             LEFT JOIN users u ON u.id = c.teacher_id
+             LEFT JOIN products p        ON p.id   = c.product_id
+             LEFT JOIN users u           ON u.id   = c.teacher_id
              LEFT JOIN lms_categories cat ON cat.id = c.category_id
-             WHERE c.slug = ?",
+             WHERE c.slug = ? AND ({$this->visibilityWhere()})",
             [$slug]
         );
     }
@@ -88,11 +143,16 @@ class Course extends Model
     }
 
     /**
-     * Count published courses.
+     * Count visible (published + product active) courses.
      */
     public function countPublished()
     {
-        $result = $this->db->fetchOne("SELECT COUNT(*) as total FROM {$this->table} WHERE status = 'published'");
-        return $result ? (int)$result['total'] : 0;
+        $result = $this->db->fetchOne(
+            "SELECT COUNT(*) AS total
+             FROM {$this->table} c
+             LEFT JOIN products p ON p.id = c.product_id
+             WHERE {$this->visibilityWhere()}"
+        );
+        return $result ? (int) $result['total'] : 0;
     }
 }

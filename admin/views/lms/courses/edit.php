@@ -66,6 +66,33 @@
                 </div>
             </div>
 
+            <!-- Producto vinculado -->
+            <div class="p-6 rounded-2xl border-2 border-blue-100 bg-blue-50/40">
+                <label class="block text-xs font-black text-blue-600 uppercase tracking-widest mb-2 px-1">
+                    Vincular con Producto del Ecommerce
+                </label>
+                <p class="text-xs text-slate-500 mb-3 px-1">El precio y la imagen se tomarán del producto seleccionado. Si el producto se desactiva, el curso dejará de mostrarse en elearning.</p>
+                <select name="product_id" class="w-full px-6 py-4 rounded-2xl border border-slate-100 bg-white text-base font-bold text-slate-700 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all">
+                    <option value="">— Sin producto vinculado (usar precio del curso) —</option>
+                    <?php foreach ($products as $prod): ?>
+                    <option value="<?= $prod['id'] ?>"
+                        <?= (int)($course['product_id'] ?? 0) === (int)$prod['id'] ? 'selected' : '' ?>>
+                        <?= htmlspecialchars("[{$prod['course_code']}] {$prod['name']}") ?>
+                        <?php if ($prod['status'] === 'inactive'): ?> ⚠ inactivo<?php endif; ?>
+                    </option>
+                    <?php endforeach; ?>
+                </select>
+                <?php if (!empty($course['product_id']) && !empty($course['product_name'])): ?>
+                <div class="mt-3 flex items-center gap-2 text-xs font-semibold text-blue-700">
+                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                    Actualmente vinculado: <?= htmlspecialchars($course['product_name']) ?>
+                    <?= isset($course['product_status']) && $course['product_status'] === 'active'
+                        ? '<span class="text-emerald-600">(activo)</span>'
+                        : '<span class="text-rose-600">(inactivo)</span>' ?>
+                </div>
+                <?php endif; ?>
+            </div>
+
             <!-- Otros Toggles -->
             <div class="space-y-4">
                 <label class="flex items-center gap-4 p-5 rounded-2xl bg-emerald-50 border border-emerald-100 cursor-pointer group transition-all hover:bg-emerald-100/50">

@@ -47,7 +47,14 @@
                                 <a href="/manager/lms/courses/<?= $course['id'] ?>/show" class="font-bold text-slate-700 hover:text-blue-600 transition-colors block text-[13px] leading-tight truncate">
                                     <?= htmlspecialchars($course['title']) ?>
                                 </a>
-                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1 truncate"><?= htmlspecialchars($course['category_name'] ?? 'IMO COURSES') ?></p>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5 truncate"><?= htmlspecialchars($course['category_name'] ?? 'IMO COURSES') ?></p>
+                                <?php if (!empty($course['product_name'])): ?>
+                                <span class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-[9px] font-bold <?= $course['product_status'] === 'active' ? 'bg-blue-50 text-blue-600' : 'bg-rose-50 text-rose-500' ?>">
+                                    <i class="fas fa-link" style="font-size:7px"></i>
+                                    <?= htmlspecialchars($course['course_code'] ?? '') ?>
+                                    &bull; <?= $course['product_status'] === 'active' ? 'activo' : 'inactivo' ?>
+                                </span>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </td>

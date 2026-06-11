@@ -81,12 +81,27 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-4">
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-1">Precio ($)</label>
+                    <p class="text-[10px] text-gray-400 mb-1">Se ignora si vinculas un producto</p>
                     <input type="number" name="price" step="0.01" value="0.00" class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-blue-500 outline-none transition">
                 </div>
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-1">% Aprobación</label>
                     <input type="number" name="pass_percentage" value="70" class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-blue-500 outline-none transition">
                 </div>
+            </div>
+
+            <div class="bg-blue-50 border border-blue-100 rounded-xl p-5 space-y-3">
+                <label class="block text-xs font-black text-blue-700 uppercase tracking-widest">Vincular Producto</label>
+                <p class="text-[10px] text-slate-500">Precio e imagen se toman del producto. Si el producto se desactiva, el curso desaparece del elearning.</p>
+                <select name="product_id" class="w-full px-4 py-2 rounded-lg border border-blue-200 bg-white text-sm font-semibold text-slate-700 focus:border-blue-500 outline-none transition">
+                    <option value="">— Sin producto —</option>
+                    <?php foreach ($products as $prod): ?>
+                    <option value="<?= $prod['id'] ?>">
+                        <?= htmlspecialchars("[{$prod['course_code']}] {$prod['name']}") ?>
+                        <?= $prod['status'] === 'inactive' ? ' ⚠ inactivo' : '' ?>
+                    </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
 
             <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-xl shadow-lg shadow-blue-500/25 transition transform hover:-translate-y-0.5">
