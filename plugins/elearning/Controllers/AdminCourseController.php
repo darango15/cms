@@ -125,7 +125,7 @@ class AdminCourseController extends BaseController
         );
         // Enrich course with linked product info
         if (!empty($course['product_id'])) {
-            $prod = $this->db->fetch("SELECT name, status FROM products WHERE id = ?", [$course['product_id']]);
+            $prod = $this->db->fetchOne("SELECT name, status FROM products WHERE id = ?", [$course['product_id']]);
             if ($prod) {
                 $course['product_name']   = $prod['name'];
                 $course['product_status'] = $prod['status'];
@@ -188,6 +188,23 @@ class AdminCourseController extends BaseController
 
         $productId = !empty($_POST['product_id']) ? (int)$_POST['product_id'] : null;
 
+        // Handle optional image file upload
+        $imagePath = $_POST['image'] ?? '';
+        if (!empty($_FILES['image_file']['tmp_name'])) {
+            $uploadDir = dirname(__DIR__, 4) . '/public/uploads/courses/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+            $ext      = strtolower(pathinfo($_FILES['image_file']['name'], PATHINFO_EXTENSION));
+            $allowed  = ['jpg', 'jpeg', 'png', 'webp'];
+            if (in_array($ext, $allowed) && $_FILES['image_file']['size'] <= 5 * 1024 * 1024) {
+                $filename  = 'course_' . uniqid('', true) . '.' . $ext;
+                if (move_uploaded_file($_FILES['image_file']['tmp_name'], $uploadDir . $filename)) {
+                    $imagePath = '/uploads/courses/' . $filename;
+                }
+            }
+        }
+
         $data = [
             'teacher_id'      => (int)($_POST['teacher_id'] ?? 0),
             'category_id'     => (int)($_POST['category_id'] ?? 0),
@@ -195,7 +212,7 @@ class AdminCourseController extends BaseController
             'title'           => $_POST['title'] ?? '',
             'slug'            => $_POST['slug'] ?? '',
             'description'     => $_POST['description'] ?? '',
-            'image'           => $_POST['image'] ?? '',
+            'image'           => $imagePath,
             'level'           => $_POST['level'] ?? 'beginner',
             'status'          => $_POST['status'] ?? 'draft',
             'price'           => (float)($_POST['price'] ?? 0.00),

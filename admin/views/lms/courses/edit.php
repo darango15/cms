@@ -10,7 +10,7 @@
     </div>
 </div>
 
-<form action="/manager/lms/courses/<?= $course['id'] ?>/update" method="POST" class="max-w-4xl mx-auto">
+<form action="/manager/lms/courses/<?= $course['id'] ?>/update" method="POST" enctype="multipart/form-data" class="max-w-4xl mx-auto">
     <div class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-50 overflow-hidden">
         <div class="p-10 space-y-8">
             <!-- Título -->
@@ -110,20 +110,28 @@
             <div>
                 <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-4 px-1">Imagen de Portada</label>
                 <div class="space-y-4">
-                    <?php if ($course['image']): ?>
-                    <div class="relative w-full h-64 rounded-3xl overflow-hidden border-4 border-white shadow-lg">
-                        <img src="<?= htmlspecialchars($course['image']) ?>" class="w-full h-full object-cover">
+                    <?php if (!empty($course['image'])): ?>
+                    <div class="relative w-full h-48 rounded-2xl overflow-hidden border border-slate-100 shadow-sm" id="img-preview-wrap">
+                        <img id="img-preview" src="<?= htmlspecialchars($course['image']) ?>" class="w-full h-full object-cover" onerror="this.closest('#img-preview-wrap').style.display='none'">
+                    </div>
+                    <?php else: ?>
+                    <div id="img-preview-wrap" class="hidden relative w-full h-48 rounded-2xl overflow-hidden border border-slate-100 shadow-sm">
+                        <img id="img-preview" src="" class="w-full h-full object-cover">
                     </div>
                     <?php endif; ?>
-                    
-                    <div class="relative group">
-                        <input type="text" name="image" value="<?= htmlspecialchars($course['image'] ?? '') ?>" class="w-full px-6 py-4 rounded-2xl border border-slate-100 bg-slate-50 text-sm font-medium text-slate-600 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all" placeholder="URL de la imagen">
-                        <div class="mt-4 border-2 border-dashed border-slate-200 rounded-[2rem] p-10 text-center hover:border-blue-400 transition-colors cursor-pointer bg-slate-50/50">
-                            <i class="fas fa-cloud-upload-alt text-4xl text-slate-300 mb-3 group-hover:text-blue-500 transition-colors"></i>
-                            <p class="text-sm font-bold text-slate-500">Haz clic para subir o arrastra una imagen</p>
-                            <p class="text-[10px] text-slate-400 uppercase tracking-widest mt-1">JPG, PNG o WebP — máx. 2MB recomendado</p>
+
+                    <!-- Campo oculto con la ruta actual -->
+                    <input type="hidden" name="image" id="image-path" value="<?= htmlspecialchars($course['image'] ?? '') ?>">
+
+                    <!-- Upload real -->
+                    <label class="flex flex-col items-center gap-3 border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center hover:border-blue-400 transition-colors cursor-pointer bg-slate-50/50">
+                        <i class="fas fa-cloud-upload-alt text-3xl text-slate-300"></i>
+                        <div>
+                            <p class="text-sm font-bold text-slate-500">Haz clic para subir una nueva imagen</p>
+                            <p class="text-[10px] text-slate-400 uppercase tracking-widest mt-1">JPG, PNG o WebP — máx. 5 MB</p>
                         </div>
-                    </div>
+                        <input type="file" name="image_file" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="previewCourseImage(this)">
+                    </label>
                 </div>
             </div>
         </div>
@@ -138,3 +146,17 @@
         </div>
     </div>
 </form>
+<script>
+function previewCourseImage(input) {
+    if (!input.files || !input.files[0]) return;
+    const wrap = document.getElementById('img-preview-wrap');
+    const img  = document.getElementById('img-preview');
+    const reader = new FileReader();
+    reader.onload = e => {
+        img.src = e.target.result;
+        wrap.classList.remove('hidden');
+        wrap.style.display = '';
+    };
+    reader.readAsDataURL(input.files[0]);
+}
+</script>
