@@ -47,4 +47,8 @@ return [
         'maintenance',
         'elearning',
     ],
+
+    'app' => [
+        'secret' => $_ENV['APP_SECRET'] ?? 'pamel-api-secret-change-me-in-production',
+    ],
 ];
