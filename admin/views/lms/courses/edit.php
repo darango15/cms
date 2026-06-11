@@ -109,30 +109,58 @@
             <!-- Imagen de Portada -->
             <div>
                 <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-4 px-1">Imagen de Portada</label>
-                <div class="space-y-4">
-                    <?php if (!empty($course['image'])): ?>
-                    <div class="relative w-full h-48 rounded-2xl overflow-hidden border border-slate-100 shadow-sm" id="img-preview-wrap">
-                        <img id="img-preview" src="<?= htmlspecialchars($course['image']) ?>" class="w-full h-full object-cover" onerror="this.closest('#img-preview-wrap').style.display='none'">
+
+                <?php
+                // Determine which image to show: product image takes priority
+                $productImg = '';
+                if (!empty($course['product_id'])) {
+                    $linkedProduct = $db->fetchOne("SELECT name, image FROM products WHERE id = ?", [$course['product_id']]);
+                    $productImg = $linkedProduct['image'] ?? '';
+                }
+                $displayImg = $productImg ?: ($course['image'] ?? '');
+                ?>
+
+                <?php if (!empty($course['product_id'])): ?>
+                <!-- Imagen viene del producto — solo lectura -->
+                <div class="rounded-2xl border border-blue-100 bg-blue-50/30 p-5 space-y-3">
+                    <div class="flex items-center gap-2 text-xs font-bold text-blue-600">
+                        <i class="fas fa-link text-[10px]"></i>
+                        Imagen del producto vinculado — para cambiarla edita el producto
+                    </div>
+                    <?php if ($displayImg): ?>
+                    <div class="w-full h-48 rounded-xl overflow-hidden border border-blue-100">
+                        <img src="<?= htmlspecialchars($displayImg) ?>" class="w-full h-full object-cover"
+                             onerror="this.closest('div').style.display='none'">
                     </div>
                     <?php else: ?>
-                    <div id="img-preview-wrap" class="hidden relative w-full h-48 rounded-2xl overflow-hidden border border-slate-100 shadow-sm">
-                        <img id="img-preview" src="" class="w-full h-full object-cover">
-                    </div>
+                    <p class="text-xs text-slate-400">El producto no tiene imagen aún. Súbela desde
+                        <a href="/manager/products/<?= $course['product_id'] ?>/edit" class="text-blue-500 underline">editar producto</a>.
+                    </p>
                     <?php endif; ?>
+                    <input type="hidden" name="image" value="<?= htmlspecialchars($course['image'] ?? '') ?>">
+                </div>
 
-                    <!-- Campo oculto con la ruta actual -->
+                <?php else: ?>
+                <!-- Sin producto — permite subir imagen propia al curso -->
+                <div class="space-y-4">
+                    <div id="img-preview-wrap" class="<?= $displayImg ? '' : 'hidden' ?> relative w-full h-48 rounded-2xl overflow-hidden border border-slate-100 shadow-sm">
+                        <img id="img-preview" src="<?= htmlspecialchars($displayImg) ?>" class="w-full h-full object-cover"
+                             onerror="this.closest('#img-preview-wrap').style.display='none'">
+                    </div>
                     <input type="hidden" name="image" id="image-path" value="<?= htmlspecialchars($course['image'] ?? '') ?>">
-
-                    <!-- Upload real -->
                     <label class="flex flex-col items-center gap-3 border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center hover:border-blue-400 transition-colors cursor-pointer bg-slate-50/50">
                         <i class="fas fa-cloud-upload-alt text-3xl text-slate-300"></i>
                         <div>
-                            <p class="text-sm font-bold text-slate-500">Haz clic para subir una nueva imagen</p>
+                            <p class="text-sm font-bold text-slate-500">Haz clic para subir una imagen</p>
                             <p class="text-[10px] text-slate-400 uppercase tracking-widest mt-1">JPG, PNG o WebP — máx. 5 MB</p>
                         </div>
                         <input type="file" name="image_file" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="previewCourseImage(this)">
                     </label>
+                    <p class="text-[10px] text-slate-400 px-1">
+                        O vincula este curso a un producto (arriba) para usar la imagen del producto automáticamente.
+                    </p>
                 </div>
+                <?php endif; ?>
             </div>
         </div>
 
