@@ -28,24 +28,76 @@ class AdminCourseController extends BaseController
             $this->redirect('/manager/login');
         }
 
-        $view = new View();
-        // Fetch all courses with teacher and category info
+        $perPage    = 20;
+        $page       = max(1, (int)($_GET['page'] ?? 1));
+        $q          = trim($_GET['q'] ?? '');
+        $status     = $_GET['status'] ?? '';
+        $categoryId = isset($_GET['category_id']) ? (int)$_GET['category_id'] : 0;
+        $hasProduct = $_GET['has_product'] ?? '';
+
+        $where  = ['1=1'];
+        $params = [];
+
+        if ($q !== '') {
+            $where[]  = '(c.title LIKE ? OR c.slug LIKE ? OR p.course_code LIKE ?)';
+            $params[] = "%{$q}%";
+            $params[] = "%{$q}%";
+            $params[] = "%{$q}%";
+        }
+        if (in_array($status, ['published', 'draft', 'archived'])) {
+            $where[]  = 'c.status = ?';
+            $params[] = $status;
+        }
+        if ($categoryId > 0) {
+            $where[]  = 'c.category_id = ?';
+            $params[] = $categoryId;
+        }
+        if ($hasProduct === '1') {
+            $where[] = 'c.product_id IS NOT NULL';
+        } elseif ($hasProduct === '0') {
+            $where[] = 'c.product_id IS NULL';
+        }
+
+        $whereStr = implode(' AND ', $where);
+
+        $total = (int)($this->db->fetchOne(
+            "SELECT COUNT(*) AS t FROM lms_courses c
+             LEFT JOIN products p ON p.id = c.product_id
+             WHERE {$whereStr}", $params
+        )['t'] ?? 0);
+
+        $offset  = ($page - 1) * $perPage;
         $courses = $this->db->fetchAll(
             "SELECT c.*, u.name as teacher_name, cat.name as category_name,
                     p.name as product_name, p.status as product_status, p.course_code,
                     (SELECT COUNT(*) FROM lms_enrollments WHERE course_id = c.id) as student_count,
-                    (SELECT COUNT(*) FROM lms_lessons WHERE course_id = c.id) as lesson_count,
-                    (SELECT COUNT(*) FROM lms_quizzes WHERE course_id = c.id) as quiz_count
+                    (SELECT COUNT(*) FROM lms_lessons    WHERE course_id = c.id) as lesson_count,
+                    (SELECT COUNT(*) FROM lms_quizzes    WHERE course_id = c.id) as quiz_count
              FROM lms_courses c
-             LEFT JOIN users u ON u.id = c.teacher_id
+             LEFT JOIN users u           ON u.id  = c.teacher_id
              LEFT JOIN lms_categories cat ON cat.id = c.category_id
-             LEFT JOIN products p ON p.id = c.product_id
-             ORDER BY c.created_at DESC"
+             LEFT JOIN products p        ON p.id  = c.product_id
+             WHERE {$whereStr}
+             ORDER BY c.created_at DESC
+             LIMIT {$perPage} OFFSET {$offset}",
+            $params
         );
 
+        $categories = $this->db->fetchAll("SELECT id, name FROM lms_categories ORDER BY name ASC");
+
+        $view = new View();
         $view->render('admin/views/lms/courses/index', [
-            'title'   => 'Gestión de Cursos LMS',
-            'courses' => $courses,
+            'title'      => 'Gestión de Cursos LMS',
+            'courses'    => $courses,
+            'categories' => $categories,
+            'total'      => $total,
+            'page'       => $page,
+            'perPage'    => $perPage,
+            'lastPage'   => (int)ceil($total / $perPage),
+            'q'          => $q,
+            'filterStatus'     => $status,
+            'filterCategory'   => $categoryId,
+            'filterHasProduct' => $hasProduct,
         ], 'admin/views/layout');
     }
 
