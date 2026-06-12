@@ -258,24 +258,38 @@ class AdminCourseController extends BaseController
             }
         }
 
+        $title = trim($_POST['title'] ?? '');
+
+        // Preserve existing slug; only regenerate if title changed and no slug exists
+        $current = $this->db->fetchOne("SELECT slug, teacher_id, pass_percentage FROM lms_courses WHERE id = ?", [(int)$id]);
+        $slug = $current['slug'] ?? $this->generateSlug($title);
+
         $data = [
-            'teacher_id'      => (int)($_POST['teacher_id'] ?? 0),
             'category_id'     => (int)($_POST['category_id'] ?? 0),
             'product_id'      => $productId,
-            'title'           => $_POST['title'] ?? '',
-            'slug'            => $_POST['slug'] ?? '',
+            'title'           => $title,
+            'slug'            => $slug,
             'description'     => $_POST['description'] ?? '',
             'image'           => $imagePath,
             'level'           => $_POST['level'] ?? 'beginner',
             'status'          => $_POST['status'] ?? 'draft',
             'price'           => (float)($_POST['price'] ?? 0.00),
-            'pass_percentage' => (int)($_POST['pass_percentage'] ?? 70),
+            'pass_percentage' => (int)($current['pass_percentage'] ?? 70),
             'updated_at'      => date('Y-m-d H:i:s'),
         ];
 
-        $this->db->update('lms_courses', $data, 'id = :id', ['id' => $id]);
-        
-        $this->flash('success', 'Curso actualizado correctamente.');
+        // Preserve teacher_id if not submitted in form
+        if (!empty($_POST['teacher_id'])) {
+            $data['teacher_id'] = (int)$_POST['teacher_id'];
+        }
+
+        $updated = $this->db->update('lms_courses', $data, 'id = :id', ['id' => (int)$id]);
+
+        if ($updated) {
+            $this->flash('success', 'Curso actualizado correctamente.');
+        } else {
+            $this->flash('error', 'No se pudo guardar. Revisa los datos e intenta de nuevo.');
+        }
         $this->redirect('/manager/lms/courses');
     }
 
