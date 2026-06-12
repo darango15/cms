@@ -25,6 +25,28 @@
                 <textarea name="description" rows="8" class="w-full px-6 py-4 rounded-2xl border border-slate-100 bg-slate-50 text-base font-medium text-slate-600 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all"><?= htmlspecialchars($course['description'] ?? '') ?></textarea>
             </div>
 
+            <!-- Código del Curso -->
+            <div>
+                <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3 px-1">Código del Curso</label>
+                <?php if (!empty($course['product_id'])): ?>
+                    <div class="flex items-center gap-3 px-6 py-4 rounded-2xl border border-blue-100 bg-blue-50/40">
+                        <span class="font-black text-blue-700 text-base tracking-widest">
+                            <?= htmlspecialchars($course['course_code'] ?? '—') ?>
+                        </span>
+                        <span class="text-xs text-slate-400 font-medium">
+                            (viene del producto vinculado —
+                            <a href="/manager/products/<?= $course['product_id'] ?>/edit" class="text-blue-500 hover:underline">editar producto</a>)
+                        </span>
+                    </div>
+                    <input type="hidden" name="course_code" value="">
+                <?php else: ?>
+                    <input type="text" name="course_code"
+                           value="<?= htmlspecialchars($course['course_code'] ?? '') ?>"
+                           placeholder="Ej: FPFF, PST, EFA…"
+                           class="w-full px-6 py-4 rounded-2xl border border-slate-100 bg-slate-50 text-base font-bold text-slate-700 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all uppercase">
+                <?php endif; ?>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <!-- Categoría -->
                 <div>
@@ -111,12 +133,7 @@
                 <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-4 px-1">Imagen de Portada</label>
 
                 <?php
-                // Determine which image to show: product image takes priority
-                $productImg = '';
-                if (!empty($course['product_id'])) {
-                    $linkedProduct = $db->fetchOne("SELECT name, image FROM products WHERE id = ?", [$course['product_id']]);
-                    $productImg = $linkedProduct['image'] ?? '';
-                }
+                $productImg = $course['product_image'] ?? '';
                 $displayImg = $productImg ?: ($course['image'] ?? '');
                 ?>
 

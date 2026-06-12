@@ -177,10 +177,11 @@ class AdminCourseController extends BaseController
         );
         // Enrich course with linked product info
         if (!empty($course['product_id'])) {
-            $prod = $this->db->fetchOne("SELECT name, status FROM products WHERE id = ?", [$course['product_id']]);
+            $prod = $this->db->fetchOne("SELECT name, status, image FROM products WHERE id = ?", [$course['product_id']]);
             if ($prod) {
                 $course['product_name']   = $prod['name'];
                 $course['product_status'] = $prod['status'];
+                $course['product_image']  = $prod['image'];
             }
         }
 
@@ -257,10 +258,14 @@ class AdminCourseController extends BaseController
             }
         }
 
+        // course_code only saved when no product linked (product's code takes priority)
+        $courseCode = $productId ? null : (trim($_POST['course_code'] ?? '') ?: null);
+
         $data = [
             'teacher_id'      => (int)($_POST['teacher_id'] ?? 0),
             'category_id'     => (int)($_POST['category_id'] ?? 0),
             'product_id'      => $productId,
+            'course_code'     => $courseCode,
             'title'           => $_POST['title'] ?? '',
             'slug'            => $_POST['slug'] ?? '',
             'description'     => $_POST['description'] ?? '',

@@ -24,6 +24,7 @@ return function($router) {
     $router->get('/manager/products/:id/edit', 'Plugins\Ecommerce\Controllers\AdminProductController@edit', 'admin.products.edit');
     $router->post('/manager/products/:id/update', 'Plugins\Ecommerce\Controllers\AdminProductController@update', 'admin.products.update');
     $router->post('/manager/products/:id/delete', 'Plugins\Ecommerce\Controllers\AdminProductController@delete', 'admin.products.delete');
+    $router->post('/manager/products/sync-courses', 'Plugins\Ecommerce\Controllers\AdminProductController@syncCourses', 'admin.products.sync');
 
     // Categories
     $router->get('/manager/categories', 'Plugins\Ecommerce\Controllers\AdminCategoryController@index', 'admin.categories');

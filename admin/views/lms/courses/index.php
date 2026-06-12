@@ -25,10 +25,20 @@ $pagerBase = $pagerBase ? "?{$pagerBase}&" : '?';
             <?= $total ?> curso<?= $total !== 1 ? 's' : '' ?> encontrado<?= $total !== 1 ? 's' : '' ?>
         </p>
     </div>
-    <a href="/manager/lms/courses/create"
-       class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl font-bold transition shadow-lg shadow-blue-600/20">
-        <i class="fas fa-plus"></i> Nuevo Curso
-    </a>
+    <div class="flex items-center gap-3">
+        <form method="POST" action="/manager/products/sync-courses"
+              onsubmit="return confirm('¿Crear cursos en borrador para todos los productos activos que aún no tienen curso?')">
+            <input type="hidden" name="_csrf" value="<?= \Core\Security::generateCsrfToken() ?>">
+            <button type="submit"
+                    class="inline-flex items-center gap-2 bg-white border border-slate-200 hover:border-blue-400 hover:bg-blue-50 text-slate-600 hover:text-blue-600 px-5 py-3 rounded-2xl font-bold transition text-sm">
+                <i class="fas fa-sync-alt text-xs"></i> Sincronizar Productos
+            </button>
+        </form>
+        <a href="/manager/lms/courses/create"
+           class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl font-bold transition shadow-lg shadow-blue-600/20">
+            <i class="fas fa-plus"></i> Nuevo Curso
+        </a>
+    </div>
 </div>
 
 <!-- Filtros -->

@@ -98,7 +98,9 @@ class AdminProductController extends Controller
                 'status'             => $_POST['status'],
             ];
 
-            if ($this->productModel->create($data)) {
+            $newId = $this->productModel->create($data);
+            if ($newId) {
+                $this->autoCreateLmsCourse((int)$newId, $data['name'], $data['description'] ?? '', (float)($data['price'] ?? 0));
                 $this->redirect('/manager/products');
             } else {
                 error_log("Product create failed for: " . ($_POST['name'] ?? ''));
@@ -149,6 +151,12 @@ class AdminProductController extends Controller
                 'status' => $_POST['status']
             ]);
 
+            // If no LMS course linked yet, auto-create one
+            $existing = $this->db->fetchOne("SELECT id FROM lms_courses WHERE product_id = ?", [(int)$id]);
+            if (!$existing) {
+                $this->autoCreateLmsCourse((int)$id, $_POST['name'], $_POST['description'] ?? '', (float)($_POST['price'] ?? 0));
+            }
+
             $this->redirect('/manager/products');
         }
     }
@@ -165,6 +173,73 @@ class AdminProductController extends Controller
         $this->redirect('/manager/products');
     }
     
+    /**
+     * Auto-create a draft LMS course linked to a product if none exists.
+     */
+    private function autoCreateLmsCourse(int $productId, string $name, string $description, float $price): void
+    {
+        $existing = $this->db->fetchOne("SELECT id FROM lms_courses WHERE product_id = ?", [$productId]);
+        if ($existing) {
+            return;
+        }
+
+        $slug = $this->generateLmsSlug($name);
+        $orig = $slug;
+        $n    = 1;
+        while ($this->db->fetchOne("SELECT id FROM lms_courses WHERE slug = ?", [$slug])) {
+            $slug = $orig . '-' . $n++;
+        }
+
+        $this->db->insert('lms_courses', [
+            'product_id'      => $productId,
+            'title'           => $name,
+            'slug'            => $slug,
+            'description'     => $description,
+            'status'          => 'draft',
+            'price'           => $price,
+            'level'           => 'beginner',
+            'pass_percentage' => 70,
+            'created_at'      => date('Y-m-d H:i:s'),
+        ]);
+    }
+
+    /**
+     * POST /manager/products/sync-courses — create missing LMS courses for all active products.
+     */
+    public function syncCourses()
+    {
+        $auth = Auth::getInstance();
+        $auth->requireAdmin('/manager/login');
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirect('/manager/products');
+        }
+
+        $products = $this->db->fetchAll(
+            "SELECT p.id, p.name, p.description, p.price
+             FROM products p
+             LEFT JOIN lms_courses c ON c.product_id = p.id
+             WHERE c.id IS NULL AND p.status = 'active'"
+        );
+
+        $created = 0;
+        foreach ($products as $p) {
+            $this->autoCreateLmsCourse((int)$p['id'], $p['name'], $p['description'] ?? '', (float)$p['price']);
+            $created++;
+        }
+
+        $this->flash('success', "Sincronización completa: {$created} curso(s) creado(s) en borrador.");
+        $this->redirect('/manager/lms/courses');
+    }
+
+    private function generateLmsSlug(string $name): string
+    {
+        $slug = strtolower(trim($name));
+        $slug = iconv('UTF-8', 'ASCII//TRANSLIT', $slug);
+        $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+        return trim($slug, '-');
+    }
+
     private function generateSlug($name)
     {
         $slug = strtolower(trim($name));
