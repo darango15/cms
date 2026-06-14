@@ -100,7 +100,14 @@ class AdminProductController extends Controller
 
             $newId = $this->productModel->create($data);
             if ($newId) {
-                $this->autoCreateLmsCourse((int)$newId, $data['name'], $data['description'] ?? '', (float)($data['price'] ?? 0));
+                $this->autoCreateLmsCourse(
+                    (int)$newId,
+                    $data['name'],
+                    $data['description'] ?? '',
+                    (float)($data['price'] ?? 0),
+                    $data['course_code'] ?? null,
+                    !empty($data['category_id']) ? (int)$data['category_id'] : null
+                );
                 $this->redirect('/manager/products');
             } else {
                 error_log("Product create failed for: " . ($_POST['name'] ?? ''));
@@ -154,7 +161,14 @@ class AdminProductController extends Controller
             // If no LMS course linked yet, auto-create one
             $existing = $this->db->fetchOne("SELECT id FROM lms_courses WHERE product_id = ?", [(int)$id]);
             if (!$existing) {
-                $this->autoCreateLmsCourse((int)$id, $_POST['name'], $_POST['description'] ?? '', (float)($_POST['price'] ?? 0));
+                $this->autoCreateLmsCourse(
+                    (int)$id,
+                    $_POST['name'],
+                    $_POST['description'] ?? '',
+                    (float)($_POST['price'] ?? 0),
+                    !empty($_POST['course_code']) ? $_POST['course_code'] : null,
+                    !empty($_POST['category_id']) ? (int)$_POST['category_id'] : null
+                );
             }
 
             $this->redirect('/manager/products');
@@ -176,14 +190,32 @@ class AdminProductController extends Controller
     /**
      * Auto-create a draft LMS course linked to a product if none exists.
      */
-    private function autoCreateLmsCourse(int $productId, string $name, string $description, float $price): void
+    /**
+     * Maps product category_id to LMS category_id.
+     * products.category_id 4 (Pamel) → lms_categories 1 (PAMEL PANAMA)
+     * products.category_id 3 (Latin) → lms_categories 2 (LATIN INDIA)
+     */
+    private function mapProductCategoryToLms(?int $productCategoryId): ?int
+    {
+        $map = [4 => 1, 3 => 2];
+        return $map[$productCategoryId] ?? null;
+    }
+
+    private function autoCreateLmsCourse(int $productId, string $name, string $description, float $price, ?string $courseCode = null, ?int $productCategoryId = null): void
     {
         $existing = $this->db->fetchOne("SELECT id FROM lms_courses WHERE product_id = ?", [$productId]);
         if ($existing) {
             return;
         }
 
-        $slug = $this->generateLmsSlug($name);
+        // Build slug: prefer course_code suffix over numeric suffix for readability
+        $base = $this->generateLmsSlug($name);
+        if ($courseCode) {
+            $slug = $base . '-' . $this->generateLmsSlug($courseCode);
+        } else {
+            $slug = $base;
+        }
+        // Ensure uniqueness
         $orig = $slug;
         $n    = 1;
         while ($this->db->fetchOne("SELECT id FROM lms_courses WHERE slug = ?", [$slug])) {
@@ -192,6 +224,7 @@ class AdminProductController extends Controller
 
         $this->db->insert('lms_courses', [
             'product_id'      => $productId,
+            'category_id'     => $this->mapProductCategoryToLms($productCategoryId),
             'title'           => $name,
             'slug'            => $slug,
             'description'     => $description,
@@ -216,7 +249,7 @@ class AdminProductController extends Controller
         }
 
         $products = $this->db->fetchAll(
-            "SELECT p.id, p.name, p.description, p.price
+            "SELECT p.id, p.name, p.description, p.price, p.course_code, p.category_id
              FROM products p
              LEFT JOIN lms_courses c ON c.product_id = p.id
              WHERE c.id IS NULL AND p.status = 'active'"
@@ -224,7 +257,14 @@ class AdminProductController extends Controller
 
         $created = 0;
         foreach ($products as $p) {
-            $this->autoCreateLmsCourse((int)$p['id'], $p['name'], $p['description'] ?? '', (float)$p['price']);
+            $this->autoCreateLmsCourse(
+                (int)$p['id'],
+                $p['name'],
+                $p['description'] ?? '',
+                (float)$p['price'],
+                $p['course_code'] ?? null,
+                !empty($p['category_id']) ? (int)$p['category_id'] : null
+            );
             $created++;
         }
 

@@ -310,6 +310,55 @@ class AdminCourseController extends BaseController
         $this->redirect('/manager/lms/courses');
     }
 
+    public function courseStudents($id)
+    {
+        $this->requireAuth();
+
+        $course = $this->db->fetchOne(
+            "SELECT c.*, p.course_code FROM lms_courses c LEFT JOIN products p ON p.id = c.product_id WHERE c.id = ?",
+            [(int)$id]
+        );
+        if (!$course) {
+            $this->redirect('/manager/lms/courses');
+        }
+
+        $enrollments = $this->db->fetchAll(
+            "SELECT e.*, u.name AS student_name, u.email AS student_email
+             FROM lms_enrollments e
+             JOIN users u ON u.id = e.student_id
+             WHERE e.course_id = ?
+             ORDER BY e.enrolled_at DESC",
+            [(int)$id]
+        );
+
+        $view = new View();
+        $view->render('admin/views/lms/courses/students', [
+            'title'       => 'Estudiantes: ' . $course['title'],
+            'course'      => $course,
+            'enrollments' => $enrollments,
+        ], 'admin/views/layout');
+    }
+
+    public function unenrollStudent($id)
+    {
+        $this->requireAuth();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirect("/manager/lms/courses/{$id}/students");
+        }
+
+        $enrollmentId = (int)($_POST['enrollment_id'] ?? 0);
+        if ($enrollmentId > 0) {
+            $this->db->execute(
+                "DELETE FROM lms_enrollments WHERE id = ? AND course_id = ?",
+                [$enrollmentId, (int)$id]
+            );
+            $this->flash('success', 'Estudiante desinscrito del curso.');
+        }
+
+        $this->redirect("/manager/lms/courses/{$id}/students");
+    }
+
     private function generateSlug($string)
     {
         $string = strtolower(trim($string));

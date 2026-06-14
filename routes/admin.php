@@ -81,6 +81,8 @@ return function($router) {
     $router->get('/manager/lms/courses/:id/show', 'Plugins\Elearning\Controllers\AdminCourseController@show', 'admin.lms.courses.show');
     $router->post('/manager/lms/courses/:id/update', 'Plugins\Elearning\Controllers\AdminCourseController@update', 'admin.lms.courses.update');
     $router->post('/manager/lms/courses/:id/delete', 'Plugins\Elearning\Controllers\AdminCourseController@delete', 'admin.lms.courses.delete');
+    $router->get('/manager/lms/courses/:id/students', 'Plugins\Elearning\Controllers\AdminCourseController@courseStudents', 'admin.lms.courses.students');
+    $router->post('/manager/lms/courses/:id/students/unenroll', 'Plugins\Elearning\Controllers\AdminCourseController@unenrollStudent', 'admin.lms.courses.unenroll');
 
     // Lessons Admin (nested under course)
     $router->get('/manager/lms/courses/:courseId/lessons', 'Plugins\Elearning\Controllers\AdminCourseController@lessons', 'admin.lms.lessons');

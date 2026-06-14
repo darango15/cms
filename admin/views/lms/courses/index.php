@@ -207,7 +207,7 @@ $pagerBase = $pagerBase ? "?{$pagerBase}&" : '?';
                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 text-slate-500 text-[9px] font-black uppercase tracking-widest hover:bg-slate-100 transition-all border border-slate-100">
                                 <i class="fas fa-edit text-[10px]"></i> Editar
                             </a>
-                            <a href="/manager/lms/students?course_id=<?= $course['id'] ?>"
+                            <a href="/manager/lms/courses/<?= $course['id'] ?>/students"
                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all text-[9px] font-black uppercase tracking-widest border border-emerald-100">
                                 <i class="fas fa-user-graduate text-[10px]"></i> Estudiantes
                             </a>
