@@ -141,7 +141,7 @@ foreach($categories as $c) {
             <div class="bg-white rounded-2xl border border-gray-100 shadow-lg p-8">
                 <h3 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6">Información General</h3>
                 
-                <form action="/manager/lms/courses/<?= $course['id'] ?>/update" method="POST" class="space-y-5">
+                <form action="/manager/lms/courses/<?= $course['id'] ?>/update" method="POST" enctype="multipart/form-data" class="space-y-5">
                     <?php echo \Core\Security::getCsrfField(); ?>
                     <div>
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Título</label>
@@ -169,6 +169,16 @@ foreach($categories as $c) {
                             <option value="intermediate" <?= $course['level'] == 'intermediate' ? 'selected' : '' ?>>Intermedio</option>
                             <option value="advanced" <?= $course['level'] == 'advanced' ? 'selected' : '' ?>>Avanzado</option>
                         </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Imagen</label>
+                        <input type="hidden" name="image" value="<?= htmlspecialchars($course['image'] ?? '') ?>">
+                        <?php if (!empty($course['image'])): ?>
+                        <img src="<?= htmlspecialchars($course['image']) ?>" alt="Portada" class="h-20 w-auto rounded-xl object-cover mb-2 border border-gray-100">
+                        <?php endif; ?>
+                        <input type="file" name="image_file" accept="image/jpeg,image/png,image/webp"
+                               class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                     </div>
 
                     <div class="pt-4">

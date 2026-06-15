@@ -247,8 +247,9 @@ class AdminCourseController extends BaseController
 
         $productId = !empty($_POST['product_id']) ? (int)$_POST['product_id'] : null;
 
-        // Handle optional image file upload
-        $imagePath = $_POST['image'] ?? '';
+        // Handle optional image file upload — preserve existing if no new upload
+        $current = $this->db->fetchOne("SELECT slug, teacher_id, pass_percentage, image FROM lms_courses WHERE id = ?", [(int)$id]);
+        $imagePath = $_POST['image'] ?? ($current['image'] ?? '');
         if (!empty($_FILES['image_file']['tmp_name'])) {
             $uploadDir = dirname(__DIR__, 4) . '/public/uploads/courses/';
             if (!is_dir($uploadDir)) {
@@ -268,8 +269,7 @@ class AdminCourseController extends BaseController
 
         $title = trim($_POST['title'] ?? '');
 
-        // Preserve existing slug; only regenerate if title changed and no slug exists
-        $current = $this->db->fetchOne("SELECT slug, teacher_id, pass_percentage FROM lms_courses WHERE id = ?", [(int)$id]);
+        // $current already fetched above (includes slug, teacher_id, pass_percentage, image)
         $slug = $current['slug'] ?? $this->generateSlug($title);
 
         $isFree = isset($_POST['is_free']) ? 1 : 0;
