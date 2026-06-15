@@ -56,6 +56,71 @@ class LessonsApiController extends Controller
         $this->apiResponse(['status' => 'success', 'message' => 'Lección marcada como completada']);
     }
 
+    /**
+     * GET /api/v1/courses/{courseId}/lessons
+     * Returns all active lessons for a course ordered by order_num.
+     */
+    public function byCourse($courseId)
+    {
+        $lessons = $this->lessonModel->byCourse((int) $courseId);
+        $this->apiResponse(['status' => 'success', 'data' => $lessons ?: []]);
+    }
+
+    /**
+     * GET /api/v1/courses/{courseId}/lessons/previous?order_num=X
+     * Returns the previous active lesson before the given order_num.
+     */
+    public function previous($courseId)
+    {
+        $orderNum = (int) ($_GET['order_num'] ?? 0);
+        $prev     = $this->lessonModel->previousInCourse((int) $courseId, $orderNum);
+        $this->apiResponse(['status' => 'success', 'data' => $prev ?: null]);
+    }
+
+    /**
+     * POST /api/v1/lessons/{id}/toggle
+     * Body: { active: true|false }
+     * Sets is_active state of a lesson. Requires auth.
+     */
+    public function toggle($id)
+    {
+        $userId = ApiToken::fromRequest();
+        if ($userId === false) {
+            $this->apiResponse(['status' => 'error', 'message' => 'Autenticación requerida'], 401);
+        }
+
+        $lesson = $this->lessonModel->find((int) $id);
+        if (!$lesson) {
+            $this->apiResponse(['status' => 'error', 'message' => 'Lección no encontrada'], 404);
+        }
+
+        $body   = json_decode(file_get_contents('php://input'), true) ?? [];
+        $active = isset($body['active']) ? (bool) $body['active'] : !$lesson['is_active'];
+
+        $this->lessonModel->setActive((int) $id, $active);
+        $this->apiResponse(['status' => 'success', 'is_active' => $active]);
+    }
+
+    /**
+     * POST /api/v1/lessons/{id}/delete
+     * Deletes a lesson. Requires auth.
+     */
+    public function destroy($id)
+    {
+        $userId = ApiToken::fromRequest();
+        if ($userId === false) {
+            $this->apiResponse(['status' => 'error', 'message' => 'Autenticación requerida'], 401);
+        }
+
+        $lesson = $this->lessonModel->find((int) $id);
+        if (!$lesson) {
+            $this->apiResponse(['status' => 'error', 'message' => 'Lección no encontrada'], 404);
+        }
+
+        $this->lessonModel->deleteLesson((int) $id);
+        $this->apiResponse(['status' => 'success', 'message' => 'Lección eliminada']);
+    }
+
     private function apiResponse(array $data, int $code = 200): void
     {
         header('Content-Type: application/json');

@@ -290,6 +290,11 @@ class AdminCourseController extends BaseController
             'updated_at'          => date('Y-m-d H:i:s'),
         ];
 
+        // Save course_code only for courses not linked to a product (linked ones inherit from product)
+        if (empty($productId)) {
+            $data['course_code'] = strtoupper(trim($_POST['course_code'] ?? ''));
+        }
+
         // Preserve teacher_id if not submitted in form
         if (!empty($_POST['teacher_id'])) {
             $data['teacher_id'] = (int)$_POST['teacher_id'];

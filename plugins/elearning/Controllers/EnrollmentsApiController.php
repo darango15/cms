@@ -79,6 +79,22 @@ class EnrollmentsApiController extends Controller
         $this->apiResponse(['status' => 'success', 'data' => $courses]);
     }
 
+    /**
+     * GET /api/v1/student/{studentId}/courses/{courseId}/progress
+     * Returns array of completed lesson IDs for the student in that course.
+     */
+    public function studentCourseProgress($studentId, $courseId)
+    {
+        $userId = ApiToken::fromRequest();
+        if ($userId === false) {
+            $this->apiResponse(['status' => 'error', 'message' => 'Autenticación requerida'], 401);
+        }
+
+        $lessonModel = new \Plugins\Elearning\Models\Lesson();
+        $ids         = $lessonModel->completedByStudentInCourse((int) $studentId, (int) $courseId);
+        $this->apiResponse(['status' => 'success', 'data' => $ids]);
+    }
+
     private function apiResponse(array $data, int $code = 200): void
     {
         header('Content-Type: application/json');

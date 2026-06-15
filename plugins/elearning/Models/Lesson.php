@@ -69,4 +69,14 @@ class Lesson extends Model
             [$userId, $lessonId]
         );
     }
+
+    public function setActive(int $lessonId, bool $active): bool
+    {
+        return (bool) $this->db->update('lms_lessons', ['is_active' => (int) $active], 'id = :id', ['id' => $lessonId]);
+    }
+
+    public function deleteLesson(int $lessonId): bool
+    {
+        return (bool) $this->db->delete('lms_lessons', 'id = :id', ['id' => $lessonId]);
+    }
 }

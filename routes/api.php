@@ -38,11 +38,28 @@ return function ($router) {
     // ── Enrollments ───────────────────────────────────────────────────────────
     $router->post('/api/v1/enrollments',                     'Plugins\Elearning\Controllers\EnrollmentsApiController@enroll',         'api.v1.enrollments.store');
     $router->get('/api/v1/enrollments/count',                'Plugins\Elearning\Controllers\EnrollmentsApiController@count',           'api.v1.enrollments.count');
-    $router->get('/api/v1/student/:studentId/courses',       'Plugins\Elearning\Controllers\EnrollmentsApiController@studentCourses', 'api.v1.student.courses');
+    $router->get('/api/v1/student/:studentId/courses',                              'Plugins\Elearning\Controllers\EnrollmentsApiController@studentCourses',       'api.v1.student.courses');
+    $router->get('/api/v1/student/:studentId/courses/:courseId/progress',           'Plugins\Elearning\Controllers\EnrollmentsApiController@studentCourseProgress', 'api.v1.student.courses.progress');
 
     // ── Lessons ───────────────────────────────────────────────────────────────
+    $router->get('/api/v1/courses/:id/lessons',           'Plugins\Elearning\Controllers\LessonsApiController@byCourse', 'api.v1.courses.lessons');
+    $router->get('/api/v1/courses/:id/lessons/previous',  'Plugins\Elearning\Controllers\LessonsApiController@previous', 'api.v1.courses.lessons.previous');
     $router->get('/api/v1/lessons/:id',              'Plugins\Elearning\Controllers\LessonsApiController@show',     'api.v1.lessons.show');
     $router->post('/api/v1/lessons/:id/complete',    'Plugins\Elearning\Controllers\LessonsApiController@complete', 'api.v1.lessons.complete');
+    $router->post('/api/v1/lessons/:id/toggle',      'Plugins\Elearning\Controllers\LessonsApiController@toggle',   'api.v1.lessons.toggle');
+    $router->post('/api/v1/lessons/:id/delete',      'Plugins\Elearning\Controllers\LessonsApiController@destroy',  'api.v1.lessons.delete');
+
+    // ── Quizzes ───────────────────────────────────────────────────────────────
+    $router->post('/api/v1/quizzes',                                    'Plugins\Elearning\Controllers\QuizzesApiController@store',            'api.v1.quizzes.store');
+    $router->get('/api/v1/quizzes/:id/questions',                       'Plugins\Elearning\Controllers\QuizzesApiController@showWithQuestions', 'api.v1.quizzes.questions');
+    $router->get('/api/v1/quizzes/:id/attempts/best',                   'Plugins\Elearning\Controllers\QuizzesApiController@bestAttempt',       'api.v1.quizzes.attempts.best');
+    $router->get('/api/v1/quizzes/:id',                                 'Plugins\Elearning\Controllers\QuizzesApiController@show',              'api.v1.quizzes.show');
+    $router->post('/api/v1/quizzes/:id/update',                         'Plugins\Elearning\Controllers\QuizzesApiController@update',            'api.v1.quizzes.update');
+    $router->post('/api/v1/quizzes/:id/delete',                         'Plugins\Elearning\Controllers\QuizzesApiController@destroy',           'api.v1.quizzes.delete');
+    $router->post('/api/v1/quizzes/:id/start',                          'Plugins\Elearning\Controllers\QuizzesApiController@startAttempt',      'api.v1.quizzes.start');
+    $router->post('/api/v1/quizzes/:id/attempts/:attemptId/grade',      'Plugins\Elearning\Controllers\QuizzesApiController@gradeAttempt',      'api.v1.quizzes.grade');
+    $router->post('/api/v1/quizzes/:id/questions',                      'Plugins\Elearning\Controllers\QuizzesApiController@storeQuestion',     'api.v1.quizzes.questions.store');
+    $router->get('/api/v1/quiz-attempts/:attemptId',                    'Plugins\Elearning\Controllers\QuizzesApiController@attempt',           'api.v1.quiz-attempts.show');
 
     // ── Users ─────────────────────────────────────────────────────────────────
     $router->get('/api/v1/users/count',      'Controllers\UsersApiController@count', 'api.v1.users.count');
