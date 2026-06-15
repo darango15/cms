@@ -142,6 +142,7 @@ foreach($categories as $c) {
                 <h3 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6">Información General</h3>
                 
                 <form action="/manager/lms/courses/<?= $course['id'] ?>/update" method="POST" class="space-y-5">
+                    <?php echo \Core\Security::getCsrfField(); ?>
                     <div>
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Título</label>
                         <input type="text" name="title" value="<?= htmlspecialchars($course['title']) ?>" class="w-full px-4 py-2.5 rounded-xl border border-gray-100 bg-slate-50 text-sm font-bold text-slate-700 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all">

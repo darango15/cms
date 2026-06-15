@@ -25,7 +25,8 @@ class AdminCategoryController extends BaseController
     public function store()
     {
         $this->requireAuth();
-        
+        $this->validateCsrf('/manager/lms/categories');
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/manager/lms/categories');
         }
@@ -46,7 +47,8 @@ class AdminCategoryController extends BaseController
     public function delete($id)
     {
         $this->requireAuth();
-        
+        $this->validateCsrf('/manager/lms/categories');
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/manager/lms/categories');
         }

@@ -101,7 +101,9 @@
                                 id="role" 
                                 required
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
-                            <option value="customer">Cliente</option>
+                            <option value="student">Estudiante</option>
+                            <option value="teacher">Instructor</option>
+                            <option value="editor">Editor</option>
                             <option value="admin">Administrador</option>
                         </select>
                         <p class="mt-1 text-xs text-gray-500">

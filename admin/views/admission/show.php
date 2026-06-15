@@ -229,6 +229,7 @@ function setStatus(newStatus) {
     const formData = new FormData();
     formData.append('id', <?= $request['id'] ?>);
     formData.append('status', newStatus);
+    formData.append('csrf_token', '<?= \Core\Security::generateCsrfToken() ?>');
     if (notes) formData.append('notes', notes);
 
     fetch('/manager/admission-requests/update-status', { method: 'POST', body: formData })

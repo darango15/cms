@@ -35,7 +35,12 @@ class Auth
             return false;
         }
 
+        if ($user['status'] !== 'active') {
+            return false;
+        }
+
         if (password_verify($password, $user['password'])) {
+            session_regenerate_id(true);
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_role'] = $user['role'];
             $_SESSION['username'] = $user['name'];
@@ -58,7 +63,12 @@ class Auth
     public function logout()
     {
         $this->user = null;
+        session_unset();
         session_destroy();
+        if (ini_get('session.use_cookies')) {
+            $p = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000, $p['path'], $p['domain'], $p['secure'], $p['httponly']);
+        }
     }
 
     public function check()
@@ -89,7 +99,8 @@ class Auth
     private function loadUser($userId)
     {
         $db = Database::getInstance();
-        $this->user = $db->fetchOne("SELECT * FROM users WHERE id = ?", [$userId]);
+        $user = $db->fetchOne("SELECT * FROM users WHERE id = ? AND status = 'active'", [$userId]);
+        $this->user = $user ?: null;
     }
 
     public static function hashPassword($password)

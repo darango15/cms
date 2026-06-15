@@ -55,6 +55,7 @@
                                 <i class="fas fa-edit"></i>
                             </a>
                             <form method="POST" action="/manager/lms/courses/<?= $course['id'] ?>/lessons/<?= $lesson['id'] ?>/delete" onsubmit="return confirm('¿Eliminar esta lección?');" class="inline">
+                                <?php echo \Core\Security::getCsrfField(); ?>
                                 <button type="submit" class="p-2 text-gray-400 hover:text-red-600 transition">
                                     <i class="fas fa-trash"></i>
                                 </button>

@@ -85,6 +85,7 @@ $statusColor = ['active' => 'bg-blue-100 text-blue-700', 'completed' => 'bg-emer
                 <td class="px-4 py-3 text-center">
                     <form action="/manager/lms/courses/<?= $course['id'] ?>/students/unenroll" method="POST"
                           onsubmit="return confirm('¿Desinscribir a <?= htmlspecialchars(addslashes($e['student_name'])) ?> de este curso?')">
+                        <?php echo \Core\Security::getCsrfField(); ?>
                         <input type="hidden" name="enrollment_id" value="<?= $e['id'] ?>">
                         <button type="submit" class="text-red-500 hover:text-red-700 text-xs font-semibold flex items-center gap-1 mx-auto">
                             <i class="fas fa-user-minus"></i> Quitar

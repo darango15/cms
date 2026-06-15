@@ -49,7 +49,7 @@ $pagerBase = $pagerBase ? "?{$pagerBase}&" : '?';
     <div class="flex gap-3 mb-4">
         <div class="flex-1 relative">
             <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none"></i>
-            <input type="text" name="q" value="<?= $q ?>"
+            <input type="text" name="q" value="<?= htmlspecialchars($q, ENT_QUOTES) ?>"
                    placeholder="Buscar por título, slug o código…"
                    class="w-full pl-12 pr-5 py-3.5 rounded-xl bg-slate-50 text-sm font-semibold text-slate-700
                           focus:ring-4 focus:ring-blue-500/10 focus:bg-white border border-transparent

@@ -37,6 +37,7 @@ return function ($router) {
 
     // ── Enrollments ───────────────────────────────────────────────────────────
     $router->post('/api/v1/enrollments',                     'Plugins\Elearning\Controllers\EnrollmentsApiController@enroll',         'api.v1.enrollments.store');
+    $router->get('/api/v1/enrollments/count',                'Plugins\Elearning\Controllers\EnrollmentsApiController@count',           'api.v1.enrollments.count');
     $router->get('/api/v1/student/:studentId/courses',       'Plugins\Elearning\Controllers\EnrollmentsApiController@studentCourses', 'api.v1.student.courses');
 
     // ── Lessons ───────────────────────────────────────────────────────────────

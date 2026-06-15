@@ -302,6 +302,7 @@ function setStatusInline(id, status) {
     const formData = new FormData();
     formData.append('id', id);
     formData.append('status', status);
+    formData.append('csrf_token', '<?= \Core\Security::generateCsrfToken() ?>');
 
     fetch('/manager/admission-requests/update-status', { method: 'POST', body: formData })
         .then(r => r.json())

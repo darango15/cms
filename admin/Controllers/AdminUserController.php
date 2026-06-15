@@ -110,8 +110,8 @@ class AdminUserController extends Controller
         }
 
         // Validar rol
-        if (!in_array($role, ['customer', 'admin'])) {
-            $role = 'customer';
+        if (!in_array($role, ['admin', 'student', 'teacher', 'editor'])) {
+            $role = 'student';
         }
 
         // Validar estado
@@ -211,8 +211,8 @@ class AdminUserController extends Controller
         }
 
         // Validar rol
-        if (!in_array($data['role'], ['customer', 'admin'])) {
-            $data['role'] = 'customer';
+        if (!in_array($data['role'], ['admin', 'student', 'teacher', 'editor'])) {
+            $data['role'] = 'student';
         }
 
         // Validar estado

@@ -121,6 +121,12 @@ class AdminAdmissionController extends Controller
             return;
         }
 
+        if (!isset($_POST['csrf_token']) || !\Core\Security::validateCsrfToken($_POST['csrf_token'])) {
+            http_response_code(403);
+            echo json_encode(['success' => false, 'message' => 'Token de seguridad inválido.']);
+            return;
+        }
+
         try {
             $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
             $status = isset($_POST['status']) ? $_POST['status'] : '';

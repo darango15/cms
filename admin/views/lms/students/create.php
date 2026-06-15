@@ -10,6 +10,7 @@
 
 <div class="max-w-xl">
     <form action="/manager/lms/students/store" method="POST" class="space-y-5">
+        <?php echo \Core\Security::getCsrfField(); ?>
         <input type="hidden" name="_back_url" value="<?= htmlspecialchars($_SERVER['REQUEST_URI']) ?>">
 
         <!-- Student -->

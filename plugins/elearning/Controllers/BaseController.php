@@ -75,4 +75,15 @@ class BaseController
     {
         $_SESSION['flash'][$type] = $message;
     }
+
+    /**
+     * Validate CSRF token; redirect with error on failure.
+     */
+    protected function validateCsrf(string $redirectUrl = '/'): void
+    {
+        if (!isset($_POST['csrf_token']) || !\Core\Security::validateCsrfToken($_POST['csrf_token'])) {
+            $this->flash('error', 'Token de seguridad inválido. Por favor recarga la página e intenta de nuevo.');
+            $this->redirect($redirectUrl);
+        }
+    }
 }

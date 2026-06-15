@@ -124,6 +124,7 @@ class AdminEnrollmentController extends BaseController
     public function store()
     {
         $this->requireAuth();
+        $this->validateCsrf('/manager/lms/students');
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/manager/lms/students');
@@ -160,7 +161,8 @@ class AdminEnrollmentController extends BaseController
     public function delete($id)
     {
         $this->requireAuth();
-        
+        $this->validateCsrf('/manager/lms/students');
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/manager/lms/students');
         }

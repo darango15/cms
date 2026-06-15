@@ -9,6 +9,7 @@
 </div>
 
 <form action="/manager/lms/quizzes/store" method="POST" class="max-w-3xl">
+    <?php echo \Core\Security::getCsrfField(); ?>
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-6">
         <div>
             <label class="block text-sm font-bold text-gray-700 mb-1">Título del Quiz</label>

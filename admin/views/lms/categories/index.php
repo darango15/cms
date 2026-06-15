@@ -9,6 +9,7 @@
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <h3 class="text-sm font-black text-navy uppercase tracking-wider mb-4">Añadir Nueva Categoría</h3>
             <form action="/manager/lms/categories/store" method="POST" class="space-y-4">
+                <?php echo \Core\Security::getCsrfField(); ?>
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-1">Nombre</label>
                     <input type="text" name="name" required class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-blue-500 outline-none transition" placeholder="Ej: Seguridad Marítima">
@@ -49,6 +50,7 @@
                         </td>
                         <td class="px-6 py-4 text-right">
                             <form method="POST" action="/manager/lms/categories/<?= $cat['id'] ?>/delete" onsubmit="return confirm('¿Eliminar categoría? Los cursos asociados quedarán sin categoría.');" class="inline">
+                                <?php echo \Core\Security::getCsrfField(); ?>
                                 <button type="submit" class="p-2 text-gray-400 hover:text-red-600 transition">
                                     <i class="fas fa-trash"></i>
                                 </button>

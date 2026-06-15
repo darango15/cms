@@ -170,7 +170,7 @@ function getRatingBadge($rating) {
         <div class="mt-6 flex justify-center">
             <nav class="flex gap-2">
                 <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                    <a href="?page=<?= $i ?><?= $filters['course'] ? '&course=' . urlencode($filters['course']) : '' ?><?= $filters['rating'] ? '&rating=' . urlencode($filters['rating']) : '' ?><?= $filters['date_from'] ? '&date_from=' . $filters['date_from'] : '' ?><?= $filters['date_to'] ? '&date_to=' . $filters['date_to'] : '' ?>" 
+                    <a href="?page=<?= $i ?><?= $filters['course'] ? '&course=' . urlencode($filters['course']) : '' ?><?= $filters['rating'] ? '&rating=' . urlencode($filters['rating']) : '' ?><?= $filters['date_from'] ? '&date_from=' . urlencode($filters['date_from']) : '' ?><?= $filters['date_to'] ? '&date_to=' . urlencode($filters['date_to']) : '' ?>"
                        class="px-4 py-2 rounded <?= $i === $page ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' ?>">
                         <?= $i ?>
                     </a>

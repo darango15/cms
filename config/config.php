@@ -49,6 +49,7 @@ return [
     ],
 
     'app' => [
-        'secret' => $_ENV['APP_SECRET'] ?? 'pamel-api-secret-change-me-in-production',
+        'secret'   => $_ENV['APP_SECRET']    ?? 'pamel-api-secret-change-me-in-production',
+        'sync_key' => $_ENV['APP_SYNC_KEY']  ?? 'PAMEL_SECRET_SYNC_2025',
     ],
 ];

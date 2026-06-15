@@ -9,6 +9,7 @@
 </div>
 
 <form action="/manager/lms/courses/store" method="POST" class="max-w-4xl">
+    <?php echo \Core\Security::getCsrfField(); ?>
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Columna Principal -->
         <div class="lg:col-span-2 space-y-6">

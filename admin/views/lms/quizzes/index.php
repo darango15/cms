@@ -54,6 +54,7 @@
                                 <i class="fas fa-edit"></i>
                             </a>
                             <form method="POST" action="/manager/lms/quizzes/<?= $quiz['id'] ?>/delete" onsubmit="return confirm('¿Estás seguro de eliminar este quiz?');" class="inline">
+                                <?php echo \Core\Security::getCsrfField(); ?>
                                 <button type="submit" class="p-2 text-gray-400 hover:text-red-600 transition" title="Eliminar">
                                     <i class="fas fa-trash"></i>
                                 </button>

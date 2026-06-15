@@ -57,6 +57,15 @@ class EnrollmentsApiController extends Controller
     }
 
     /**
+     * GET /api/v1/enrollments/count
+     */
+    public function count()
+    {
+        $result = $this->db->fetchOne("SELECT COUNT(*) AS total FROM lms_enrollments");
+        $this->apiResponse(['status' => 'success', 'count' => (int)($result['total'] ?? 0)]);
+    }
+
+    /**
      * GET /api/v1/student/{studentId}/courses
      */
     public function studentCourses($studentId)

@@ -62,7 +62,8 @@ class AdminQuizController extends BaseController
     public function store()
     {
         $this->requireAuth();
-        
+        $this->validateCsrf('/manager/lms/quizzes');
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/manager/lms/quizzes');
         }
@@ -111,7 +112,8 @@ class AdminQuizController extends BaseController
     public function update($id)
     {
         $this->requireAuth();
-        
+        $this->validateCsrf('/manager/lms/quizzes');
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/manager/lms/quizzes');
         }
@@ -138,7 +140,8 @@ class AdminQuizController extends BaseController
     public function delete($id)
     {
         $this->requireAuth();
-        
+        $this->validateCsrf('/manager/lms/quizzes');
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/manager/lms/quizzes');
         }
@@ -204,7 +207,8 @@ class AdminQuizController extends BaseController
     public function storeQuestion($quizId)
     {
         $this->requireAuth();
-        
+        $this->validateCsrf("/manager/lms/quizzes/{$quizId}/questions/add");
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect("/manager/lms/quizzes/{$quizId}/questions");
         }
@@ -248,7 +252,8 @@ class AdminQuizController extends BaseController
     public function deleteQuestion($quizId, $id)
     {
         $this->requireAuth();
-        
+        $this->validateCsrf("/manager/lms/quizzes/{$quizId}/questions");
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect("/manager/lms/quizzes/{$quizId}/questions");
         }

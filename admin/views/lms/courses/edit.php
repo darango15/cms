@@ -11,6 +11,7 @@
 </div>
 
 <form action="/manager/lms/courses/<?= $course['id'] ?>/update" method="POST" enctype="multipart/form-data" class="max-w-4xl mx-auto">
+    <?php echo \Core\Security::getCsrfField(); ?>
     <div class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-50 overflow-hidden">
         <div class="p-10 space-y-8">
             <!-- Título -->
@@ -118,12 +119,12 @@
             <!-- Otros Toggles -->
             <div class="space-y-4">
                 <label class="flex items-center gap-4 p-5 rounded-2xl bg-emerald-50 border border-emerald-100 cursor-pointer group transition-all hover:bg-emerald-100/50">
-                    <input type="checkbox" name="is_free" class="w-5 h-5 rounded border-emerald-300 text-emerald-600 focus:ring-emerald-500/20" <?= (float)$course['price'] == 0 ? 'checked' : '' ?>>
+                    <input type="checkbox" name="is_free" class="w-5 h-5 rounded border-emerald-300 text-emerald-600 focus:ring-emerald-500/20" <?= !empty($course['is_free']) ? 'checked' : '' ?>>
                     <span class="text-sm font-bold text-emerald-700">Marcar como curso gratuito (ignora el precio al inscribirse)</span>
                 </label>
-                
+
                 <label class="flex items-center gap-4 p-5 rounded-2xl bg-violet-50 border border-violet-100 cursor-pointer group transition-all hover:bg-violet-100/50">
-                    <input type="checkbox" name="has_survey" class="w-5 h-5 rounded border-violet-300 text-violet-600 focus:ring-violet-500/20">
+                    <input type="checkbox" name="has_survey" class="w-5 h-5 rounded border-violet-300 text-violet-600 focus:ring-violet-500/20" <?= !empty($course['satisfaction_enabled']) ? 'checked' : '' ?>>
                     <span class="text-sm font-bold text-violet-700">Habilitar formulario de satisfacción al finalizar el curso</span>
                 </label>
             </div>

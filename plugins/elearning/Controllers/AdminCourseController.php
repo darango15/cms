@@ -127,7 +127,8 @@ class AdminCourseController extends BaseController
     public function store()
     {
         $this->requireAuth();
-        
+        $this->validateCsrf('/manager/lms/courses');
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/manager/lms/courses');
         }
@@ -164,8 +165,21 @@ class AdminCourseController extends BaseController
     public function edit($id)
     {
         $this->requireAuth();
-        
-        $course = $this->courseModel->find($id);
+
+        // Fetch raw lms_courses row (no COALESCE) so the form shows the actual course values
+        $course = $this->db->fetchOne(
+            "SELECT c.*,
+                    p.name   AS product_name,
+                    p.status AS product_status,
+                    p.image  AS product_image,
+                    p.course_code,
+                    cat.name AS category_name
+             FROM lms_courses c
+             LEFT JOIN products      p   ON p.id   = c.product_id
+             LEFT JOIN lms_categories cat ON cat.id = c.category_id
+             WHERE c.id = ?",
+            [(int)$id]
+        );
         if (!$course) {
             $this->redirect('/manager/lms/courses');
         }
@@ -175,15 +189,6 @@ class AdminCourseController extends BaseController
         $products   = $this->db->fetchAll(
             "SELECT id, name, course_code, status FROM products ORDER BY name ASC"
         );
-        // Enrich course with linked product info
-        if (!empty($course['product_id'])) {
-            $prod = $this->db->fetchOne("SELECT name, status, image FROM products WHERE id = ?", [$course['product_id']]);
-            if ($prod) {
-                $course['product_name']   = $prod['name'];
-                $course['product_status'] = $prod['status'];
-                $course['product_image']  = $prod['image'];
-            }
-        }
 
         $view = new View();
         $view->render('admin/views/lms/courses/edit', [
@@ -234,7 +239,8 @@ class AdminCourseController extends BaseController
     public function update($id)
     {
         $this->requireAuth();
-        
+        $this->validateCsrf('/manager/lms/courses');
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/manager/lms/courses');
         }
@@ -250,7 +256,9 @@ class AdminCourseController extends BaseController
             }
             $ext      = strtolower(pathinfo($_FILES['image_file']['name'], PATHINFO_EXTENSION));
             $allowed  = ['jpg', 'jpeg', 'png', 'webp'];
-            if (in_array($ext, $allowed) && $_FILES['image_file']['size'] <= 5 * 1024 * 1024) {
+            $allowedMimes = ['image/jpeg', 'image/png', 'image/webp'];
+            $mime = mime_content_type($_FILES['image_file']['tmp_name']);
+            if (in_array($ext, $allowed) && in_array($mime, $allowedMimes, true) && $_FILES['image_file']['size'] <= 5 * 1024 * 1024) {
                 $filename  = 'course_' . uniqid('', true) . '.' . $ext;
                 if (move_uploaded_file($_FILES['image_file']['tmp_name'], $uploadDir . $filename)) {
                     $imagePath = '/uploads/courses/' . $filename;
@@ -264,18 +272,22 @@ class AdminCourseController extends BaseController
         $current = $this->db->fetchOne("SELECT slug, teacher_id, pass_percentage FROM lms_courses WHERE id = ?", [(int)$id]);
         $slug = $current['slug'] ?? $this->generateSlug($title);
 
+        $isFree = isset($_POST['is_free']) ? 1 : 0;
+
         $data = [
-            'category_id'     => (int)($_POST['category_id'] ?? 0),
-            'product_id'      => $productId,
-            'title'           => $title,
-            'slug'            => $slug,
-            'description'     => $_POST['description'] ?? '',
-            'image'           => $imagePath,
-            'level'           => $_POST['level'] ?? 'beginner',
-            'status'          => $_POST['status'] ?? 'draft',
-            'price'           => (float)($_POST['price'] ?? 0.00),
-            'pass_percentage' => (int)($current['pass_percentage'] ?? 70),
-            'updated_at'      => date('Y-m-d H:i:s'),
+            'category_id'         => (int)($_POST['category_id'] ?? 0),
+            'product_id'          => $productId,
+            'title'               => $title,
+            'slug'                => $slug,
+            'description'         => $_POST['description'] ?? '',
+            'image'               => $imagePath,
+            'level'               => $_POST['level'] ?? 'beginner',
+            'status'              => $_POST['status'] ?? 'draft',
+            'price'               => $isFree ? 0.00 : (float)($_POST['price'] ?? 0.00),
+            'is_free'             => $isFree,
+            'satisfaction_enabled'=> isset($_POST['has_survey']) ? 1 : 0,
+            'pass_percentage'     => (int)($current['pass_percentage'] ?? 70),
+            'updated_at'          => date('Y-m-d H:i:s'),
         ];
 
         // Preserve teacher_id if not submitted in form
@@ -299,7 +311,8 @@ class AdminCourseController extends BaseController
     public function delete($id)
     {
         $this->requireAuth();
-        
+        $this->validateCsrf('/manager/lms/courses');
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect('/manager/lms/courses');
         }
@@ -342,6 +355,7 @@ class AdminCourseController extends BaseController
     public function unenrollStudent($id)
     {
         $this->requireAuth();
+        $this->validateCsrf('/manager/lms/courses');
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect("/manager/lms/courses/{$id}/students");
@@ -349,7 +363,7 @@ class AdminCourseController extends BaseController
 
         $enrollmentId = (int)($_POST['enrollment_id'] ?? 0);
         if ($enrollmentId > 0) {
-            $this->db->execute(
+            $this->db->query(
                 "DELETE FROM lms_enrollments WHERE id = ? AND course_id = ?",
                 [$enrollmentId, (int)$id]
             );
@@ -419,7 +433,8 @@ class AdminCourseController extends BaseController
     public function storeLesson($courseId)
     {
         $this->requireAuth();
-        
+        $this->validateCsrf("/manager/lms/courses/{$courseId}/lessons");
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect("/manager/lms/courses/{$courseId}/lessons");
         }
@@ -471,7 +486,8 @@ class AdminCourseController extends BaseController
     public function updateLesson($courseId, $id)
     {
         $this->requireAuth();
-        
+        $this->validateCsrf("/manager/lms/courses/{$courseId}/lessons");
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect("/manager/lms/courses/{$courseId}/lessons");
         }
@@ -500,7 +516,8 @@ class AdminCourseController extends BaseController
     public function deleteLesson($courseId, $id)
     {
         $this->requireAuth();
-        
+        $this->validateCsrf("/manager/lms/courses/{$courseId}/lessons");
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirect("/manager/lms/courses/{$courseId}/lessons");
         }

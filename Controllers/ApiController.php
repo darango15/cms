@@ -17,9 +17,9 @@ class ApiController
         header('Content-Type: application/json');
         
         // Simple API Key validation
-        $apiKey = $_SERVER['HTTP_X_API_KEY'] ?? $_GET['api_key'] ?? null;
-        $validKey = 'PAMEL_SECRET_SYNC_2025'; // In production this should be in config/config.php
-        
+        $apiKey   = $_SERVER['HTTP_X_API_KEY'] ?? $_GET['api_key'] ?? null;
+        $validKey = Config::get('app.sync_key', 'PAMEL_SECRET_SYNC_2025');
+
         if ($apiKey !== $validKey) {
             http_response_code(401);
             echo json_encode([
@@ -56,10 +56,11 @@ class ApiController
             ]);
             
         } catch (\Exception $e) {
+            error_log('ApiController::getProducts error: ' . $e->getMessage());
             http_response_code(500);
             echo json_encode([
-                'status' => 'error',
-                'message' => 'Database error: ' . $e->getMessage()
+                'status'  => 'error',
+                'message' => 'Error interno del servidor',
             ]);
         }
         exit;

@@ -5,18 +5,19 @@
     <?php if ($success): ?>
         <div class="bg-green-50 border border-green-200 text-green-800 rounded-lg px-4 py-3 flex items-start gap-3">
             <i class="fas fa-check-circle mt-0.5 text-green-500"></i>
-            <span><?php echo $success; ?></span>
+            <span><?php echo htmlspecialchars($success, ENT_QUOTES); ?></span>
         </div>
     <?php endif; ?>
 
     <?php if ($error): ?>
         <div class="bg-red-50 border border-red-200 text-red-800 rounded-lg px-4 py-3 flex items-start gap-3">
             <i class="fas fa-exclamation-circle mt-0.5 text-red-500"></i>
-            <span><?php echo $error; ?></span>
+            <span><?php echo htmlspecialchars($error, ENT_QUOTES); ?></span>
         </div>
     <?php endif; ?>
 
     <form method="POST" action="/manager/email-settings/save" class="space-y-6">
+        <?php echo \Core\Security::getCsrfField(); ?>
 
         <!-- Remitente y destino -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
@@ -125,6 +126,7 @@
 
     <!-- Botón de prueba separado (GET) -->
     <form method="POST" action="/manager/email-settings/test">
+        <?php echo \Core\Security::getCsrfField(); ?>
         <button type="submit"
                 class="w-full sm:w-auto bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2.5 px-6 rounded-lg transition text-sm flex items-center gap-2">
             <i class="fas fa-paper-plane text-blue-500"></i> Enviar correo de prueba

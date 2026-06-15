@@ -54,6 +54,12 @@ class AdminEmailSettingsController
             session_start();
         }
 
+        if (!isset($_POST['csrf_token']) || !\Core\Security::validateCsrfToken($_POST['csrf_token'])) {
+            $_SESSION['email_error'] = 'Token de seguridad inválido.';
+            header('Location: /manager/email-settings');
+            exit;
+        }
+
         $values = [
             'email_from_name'        => trim($_POST['from_name'] ?? ''),
             'email_from_email'       => trim($_POST['from_email'] ?? ''),
@@ -84,6 +90,12 @@ class AdminEmailSettingsController
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
+        }
+
+        if (!isset($_POST['csrf_token']) || !\Core\Security::validateCsrfToken($_POST['csrf_token'])) {
+            $_SESSION['email_error'] = 'Token de seguridad inválido.';
+            header('Location: /manager/email-settings');
+            exit;
         }
 
         $config = $this->loadSettings();

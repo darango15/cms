@@ -43,6 +43,7 @@
                     <td class="px-6 py-4 text-right">
                         <div class="flex items-center justify-end gap-2">
                             <form method="POST" action="/manager/lms/quizzes/<?= $quiz['id'] ?>/questions/<?= $q['id'] ?>/delete" onsubmit="return confirm('¿Eliminar esta pregunta?');" class="inline">
+                                <?php echo \Core\Security::getCsrfField(); ?>
                                 <button type="submit" class="p-2 text-gray-400 hover:text-red-600 transition" title="Eliminar">
                                     <i class="fas fa-trash"></i>
                                 </button>

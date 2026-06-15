@@ -102,6 +102,12 @@ class AdmissionController
                         throw new \Exception("El archivo {$inputName} supera el máximo de 5 MB.");
                     }
 
+                    $allowedMimes = ['image/jpeg', 'image/png', 'application/pdf'];
+                    $mime = mime_content_type($tmpPath);
+                    if (!\in_array($mime, $allowedMimes, true)) {
+                        throw new \Exception("Tipo de archivo no permitido para {$inputName}.");
+                    }
+
                     $newName  = uniqid($inputName . '_', true) . '.' . $extension;
                     $destPath = $uploadDir . $newName;
 
