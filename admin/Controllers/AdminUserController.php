@@ -220,6 +220,13 @@ class AdminUserController extends Controller
             $data['status'] = 'active';
         }
 
+        // Verificar email duplicado antes de actualizar
+        $existing = $this->userModel->findByEmail($data['email']);
+        if ($existing && (int)$existing['id'] !== $id) {
+            header("Location: /manager/users/$id/edit?error=" . urlencode('El email ya está en uso por otro usuario'));
+            exit;
+        }
+
         if ($this->userModel->updateProfile($id, $data)) {
             // Actualizar contraseña si se proporcionó
             if (!empty($_POST['password'])) {
@@ -229,17 +236,17 @@ class AdminUserController extends Controller
                 }
                 $this->userModel->updatePassword($id, $_POST['password']);
             }
-            
+
             Security::logSecurityEvent('user_updated', [
                 'user_id' => $id,
                 'updated_by' => $_SESSION['user_id'] ?? 'unknown'
             ]);
-            
+
             header('Location: /manager/users?success=' . urlencode('Usuario actualizado exitosamente'));
             exit;
         }
 
-        header("Location: /manager/users/$id/edit?error=" . urlencode('Error al actualizar'));
+        header("Location: /manager/users/$id/edit?error=" . urlencode('Error al actualizar el usuario'));
         exit;
     }
 
