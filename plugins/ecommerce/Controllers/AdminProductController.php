@@ -24,9 +24,10 @@ class AdminProductController extends Controller
 
         // Filters from GET
         $filters = [
-            'search'      => trim($_GET['search'] ?? ''),
-            'status'      => $_GET['status'] ?? '',
-            'category_id' => $_GET['category_id'] ?? '',
+            'search'         => trim($_GET['search'] ?? ''),
+            'status'         => $_GET['status'] ?? '',
+            'category_id'    => $_GET['category_id'] ?? '',
+            'subcategory_id' => $_GET['subcategory_id'] ?? '',
         ];
         $filters = array_filter($filters, fn($v) => $v !== '');
 
@@ -39,17 +40,20 @@ class AdminProductController extends Controller
         $products   = $this->productModel->getPaginatedFiltered($perPage, $offset, $filters);
         $totalPages = (int) ceil($total / $perPage);
 
-        $categories = (new Category())->all();
+        $allCats        = (new Category())->all();
+        $parentCats     = array_values(array_filter($allCats, fn($c) => empty($c['parent_id'])));
+        $subcategories  = array_values(array_filter($allCats, fn($c) => !empty($c['parent_id'])));
 
         $this->view->render('plugins/ecommerce/views/admin/products', [
-            'title'       => 'Products',
-            'products'    => $products,
-            'categories'  => $categories,
-            'filters'     => $filters,
-            'currentPage' => $page,
-            'totalPages'  => $totalPages,
-            'total'       => $total,
-            'perPage'     => $perPage,
+            'title'          => 'Products',
+            'products'       => $products,
+            'parentCats'     => $parentCats,
+            'subcategories'  => $subcategories,
+            'filters'        => $filters,
+            'currentPage'    => $page,
+            'totalPages'     => $totalPages,
+            'total'          => $total,
+            'perPage'        => $perPage,
         ], 'admin/views/layout');
     }
 

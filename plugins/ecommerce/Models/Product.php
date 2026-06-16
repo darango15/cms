@@ -337,6 +337,10 @@ class Product extends Model
             $conditions[] = "p.category_id = ?";
             $params[]     = (int) $filters['category_id'];
         }
+        if (!empty($filters['subcategory_id'])) {
+            $conditions[] = "p.subcategory_id = ?";
+            $params[]     = (int) $filters['subcategory_id'];
+        }
 
         $where = $conditions ? 'WHERE ' . implode(' AND ', $conditions) : '';
         return [$where, $params];
