@@ -151,6 +151,12 @@ $pagerBase = $pagerBase ? "?{$pagerBase}&" : '?';
                                    class="font-bold text-slate-700 hover:text-blue-600 transition-colors block text-[13px] leading-tight truncate">
                                     <?= htmlspecialchars($course['title']) ?>
                                 </a>
+                                <?php if (!empty($course['course_code'])): ?>
+                                <span class="inline-flex items-center gap-1 mt-0.5 px-2 py-0.5 rounded-md bg-slate-100 text-slate-500 text-[9px] font-black uppercase tracking-widest">
+                                    <i class="fas fa-tag" style="font-size:7px"></i>
+                                    <?= htmlspecialchars($course['course_code']) ?>
+                                </span>
+                                <?php endif; ?>
                                 <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5 truncate">
                                     <?= htmlspecialchars($course['category_name'] ?? '—') ?>
                                 </p>
@@ -158,7 +164,6 @@ $pagerBase = $pagerBase ? "?{$pagerBase}&" : '?';
                                 <span class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-[9px] font-bold
                                              <?= $course['product_status'] === 'active' ? 'bg-blue-50 text-blue-600' : 'bg-rose-50 text-rose-500' ?>">
                                     <i class="fas fa-link" style="font-size:7px"></i>
-                                    <?= htmlspecialchars($course['course_code'] ?? '') ?>
                                     &bull; <?= $course['product_status'] === 'active' ? 'activo' : 'inactivo' ?>
                                 </span>
                                 <?php endif; ?>
@@ -219,6 +224,14 @@ $pagerBase = $pagerBase ? "?{$pagerBase}&" : '?';
                                class="px-3 py-1.5 rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-600 hover:text-white transition-all text-[9px] font-black uppercase tracking-widest border border-amber-100">
                                 + Quiz
                             </a>
+                            <form method="POST" action="/manager/lms/courses/<?= $course['id'] ?>/delete"
+                                  onsubmit="return confirm('¿Eliminar el curso «<?= htmlspecialchars(addslashes($course['title'])) ?>»? Esta acción no se puede deshacer.')">
+                                <?= \Core\Security::getCsrfField() ?>
+                                <button type="submit"
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-50 text-rose-500 text-[9px] font-black uppercase tracking-widest hover:bg-rose-500 hover:text-white transition-all border border-rose-100">
+                                    <i class="fas fa-trash text-[10px]"></i> Eliminar
+                                </button>
+                            </form>
                         </div>
                     </td>
                 </tr>

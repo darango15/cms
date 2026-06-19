@@ -69,7 +69,8 @@ class AdminCourseController extends BaseController
         $offset  = ($page - 1) * $perPage;
         $courses = $this->db->fetchAll(
             "SELECT c.*, u.name as teacher_name, cat.name as category_name,
-                    p.name as product_name, p.status as product_status, p.course_code,
+                    p.name as product_name, p.status as product_status,
+                    COALESCE(p.course_code, c.course_code) AS course_code,
                     (SELECT COUNT(*) FROM lms_enrollments WHERE course_id = c.id) as student_count,
                     (SELECT COUNT(*) FROM lms_lessons    WHERE course_id = c.id) as lesson_count,
                     (SELECT COUNT(*) FROM lms_quizzes    WHERE course_id = c.id) as quiz_count
