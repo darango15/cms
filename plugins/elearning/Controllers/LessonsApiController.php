@@ -179,8 +179,7 @@ class LessonsApiController extends Controller
                 $data[$field] = $body[$field];
             }
         }
-        $data['updated_at'] = date('Y-m-d H:i:s');
-        error_log("LessonsApiController::update data: " . print_r($data, true));
+        error_log("LessonsApiController::update data keys: " . implode(',', array_keys($data)));
 
         $res = $this->lessonModel->update((int) $id, $data);
         if (!$res) {
