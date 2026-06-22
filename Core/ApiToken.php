@@ -57,7 +57,19 @@ class ApiToken
      */
     public static function fromRequest()
     {
-        $header = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+        // 1. Header estándar (puede ser stripeado por nginx en algunas configs)
+        $header = $_SERVER['HTTP_AUTHORIZATION']
+               ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION']
+               ?? '';
+
+        // 2. Fallback: header personalizado que nginx no stripea
+        if (empty($header)) {
+            $custom = $_SERVER['HTTP_X_CMS_TOKEN'] ?? '';
+            if ($custom !== '') {
+                return self::validate($custom);
+            }
+        }
+
         if (strpos($header, 'Bearer ') !== 0) return false;
         return self::validate(substr($header, 7));
     }
