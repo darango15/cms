@@ -183,7 +183,10 @@ class LessonsApiController extends Controller
         error_log("LessonsApiController::update data: " . print_r($data, true));
 
         $res = $this->lessonModel->update((int) $id, $data);
-        error_log("LessonsApiController::update db result: " . ($res ? 'SUCCESS' : 'FAILED'));
+        if (!$res) {
+            error_log("LessonsApiController::update FAILED for lesson {$id}. Data keys: " . implode(',', array_keys($data)));
+            $this->apiResponse(['status' => 'error', 'message' => 'Error actualizando en base de datos'], 500);
+        }
         $this->apiResponse(['status' => 'success', 'message' => 'Lección actualizada']);
     }
 
