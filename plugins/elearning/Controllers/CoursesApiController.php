@@ -106,6 +106,96 @@ class CoursesApiController extends Controller
         $this->apiResponse(['status' => 'success', 'count' => $total]);
     }
 
+    /**
+     * POST /api/v1/courses
+     */
+    public function store()
+    {
+        if (ApiToken::fromRequest() === false) {
+            $this->apiResponse(['status' => 'error', 'message' => 'Autenticación requerida'], 401);
+        }
+
+        $body = json_decode(file_get_contents('php://input'), true) ?? [];
+        if (empty($body['title'])) {
+            $this->apiResponse(['status' => 'error', 'message' => 'Título requerido'], 400);
+        }
+
+        $slug = $this->toSlug($body['title']);
+        $data = [
+            'teacher_id'  => (int) ($body['teacher_id'] ?? 0),
+            'category_id' => !empty($body['category_id']) ? (int) $body['category_id'] : null,
+            'title'       => $body['title'],
+            'slug'        => $slug,
+            'description' => $body['description'] ?? '',
+            'price'       => (float) ($body['price'] ?? 0),
+            'is_free'     => (int) ($body['is_free'] ?? 0),
+            'level'       => $body['level'] ?? 'beginner',
+            'status'      => $body['status'] ?? 'draft',
+            'image'       => $body['image'] ?? null,
+            'created_at'  => date('Y-m-d H:i:s'),
+        ];
+
+        $id = $this->courseModel->create($data);
+        if (!$id) {
+            $this->apiResponse(['status' => 'error', 'message' => 'Error al crear el curso'], 500);
+        }
+
+        $this->apiResponse(['status' => 'success', 'data' => ['id' => $id, 'slug' => $slug]]);
+    }
+
+    /**
+     * POST /api/v1/courses/{id}/update
+     */
+    public function update($id)
+    {
+        if (ApiToken::fromRequest() === false) {
+            $this->apiResponse(['status' => 'error', 'message' => 'Autenticación requerida'], 401);
+        }
+
+        $course = $this->courseModel->find((int) $id);
+        if (!$course) {
+            $this->apiResponse(['status' => 'error', 'message' => 'Curso no encontrado'], 404);
+        }
+
+        $body     = json_decode(file_get_contents('php://input'), true) ?? [];
+        $fillable = ['title', 'category_id', 'description', 'price', 'is_free', 'level', 'status', 'image', 'satisfaction_enabled'];
+        $data     = ['updated_at' => date('Y-m-d H:i:s')];
+        foreach ($fillable as $field) {
+            if (array_key_exists($field, $body)) {
+                $data[$field] = $body[$field];
+            }
+        }
+
+        $this->courseModel->update((int) $id, $data);
+        $this->apiResponse(['status' => 'success', 'message' => 'Curso actualizado']);
+    }
+
+    /**
+     * POST /api/v1/courses/{id}/delete
+     */
+    public function destroy($id)
+    {
+        if (ApiToken::fromRequest() === false) {
+            $this->apiResponse(['status' => 'error', 'message' => 'Autenticación requerida'], 401);
+        }
+
+        $course = $this->courseModel->find((int) $id);
+        if (!$course) {
+            $this->apiResponse(['status' => 'error', 'message' => 'Curso no encontrado'], 404);
+        }
+
+        $this->courseModel->delete((int) $id);
+        $this->apiResponse(['status' => 'success', 'message' => 'Curso eliminado']);
+    }
+
+    private function toSlug(string $text): string
+    {
+        $text = mb_strtolower($text, 'UTF-8');
+        $text = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $text);
+        $text = preg_replace('/[^a-z0-9\s-]/', '', $text);
+        return preg_replace('/[\s-]+/', '-', trim($text));
+    }
+
     private function apiResponse(array $data, int $code = 200): void
     {
         header('Content-Type: application/json');

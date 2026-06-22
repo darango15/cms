@@ -31,6 +31,9 @@ return function ($router) {
     $router->get('/api/v1/courses/:id',                      'Plugins\Elearning\Controllers\CoursesApiController@show',            'api.v1.courses.show');
     $router->get('/api/v1/courses/:id/content',              'Plugins\Elearning\Controllers\CoursesApiController@content',         'api.v1.courses.content');
     $router->get('/api/v1/courses/:id/check-enrollment',     'Plugins\Elearning\Controllers\CoursesApiController@checkEnrollment', 'api.v1.courses.check-enrollment');
+    $router->post('/api/v1/courses',                         'Plugins\Elearning\Controllers\CoursesApiController@store',           'api.v1.courses.store');
+    $router->post('/api/v1/courses/:id/update',              'Plugins\Elearning\Controllers\CoursesApiController@update',          'api.v1.courses.update');
+    $router->post('/api/v1/courses/:id/delete',              'Plugins\Elearning\Controllers\CoursesApiController@destroy',         'api.v1.courses.delete');
 
     // ── Categories ────────────────────────────────────────────────────────────
     $router->get('/api/v1/categories',       'Plugins\Elearning\Controllers\CategoriesApiController@index', 'api.v1.categories');

@@ -171,6 +171,7 @@ class LessonsApiController extends Controller
         }
 
         $body = json_decode(file_get_contents('php://input'), true) ?? [];
+        error_log("LessonsApiController::update body: " . print_r($body, true));
         $data = [];
         $fillable = ['title', 'content', 'video_url', 'file_path', 'type', 'order_num', 'duration'];
         foreach ($fillable as $field) {
@@ -179,8 +180,10 @@ class LessonsApiController extends Controller
             }
         }
         $data['updated_at'] = date('Y-m-d H:i:s');
+        error_log("LessonsApiController::update data: " . print_r($data, true));
 
-        $this->lessonModel->update((int) $id, $data);
+        $res = $this->lessonModel->update((int) $id, $data);
+        error_log("LessonsApiController::update db result: " . ($res ? 'SUCCESS' : 'FAILED'));
         $this->apiResponse(['status' => 'success', 'message' => 'Lección actualizada']);
     }
 
