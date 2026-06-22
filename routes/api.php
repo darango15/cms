@@ -45,6 +45,8 @@ return function ($router) {
     $router->get('/api/v1/courses/:id/lessons',           'Plugins\Elearning\Controllers\LessonsApiController@byCourse', 'api.v1.courses.lessons');
     $router->get('/api/v1/courses/:id/lessons/previous',  'Plugins\Elearning\Controllers\LessonsApiController@previous', 'api.v1.courses.lessons.previous');
     $router->get('/api/v1/lessons/:id',              'Plugins\Elearning\Controllers\LessonsApiController@show',     'api.v1.lessons.show');
+    $router->post('/api/v1/lessons',                 'Plugins\Elearning\Controllers\LessonsApiController@store',    'api.v1.lessons.store');
+    $router->post('/api/v1/lessons/:id/update',      'Plugins\Elearning\Controllers\LessonsApiController@update',   'api.v1.lessons.update');
     $router->post('/api/v1/lessons/:id/complete',    'Plugins\Elearning\Controllers\LessonsApiController@complete', 'api.v1.lessons.complete');
     $router->post('/api/v1/lessons/:id/toggle',      'Plugins\Elearning\Controllers\LessonsApiController@toggle',   'api.v1.lessons.toggle');
     $router->post('/api/v1/lessons/:id/delete',      'Plugins\Elearning\Controllers\LessonsApiController@destroy',  'api.v1.lessons.delete');

@@ -25,7 +25,7 @@ WHERE id = 203;
 -- LESSONS
 -- ============================================================
 
-INSERT INTO lms_lessons (course_id, title, content, order_num, is_active, created_at) VALUES
+INSERT INTO lms_lessons (course_id, title, content, order_num, status, created_at) VALUES
 
 (203, 'Introduction to the Course', '<div class="lesson-content">
 <img src="https://pamel.edu.pa/uploads/pshb/image1.jpeg" alt="PSHB Course Manual Cover" style="max-width:100%;margin-bottom:1.5rem;">
@@ -41,7 +41,7 @@ INSERT INTO lms_lessons (course_id, title, content, order_num, is_active, create
 <h2>Training Requirement</h2>
 <p>This training is part of the mandatory minimum requirements for the training and qualification of all masters and officers that are required to manage crisis situations on board in accordance with <strong>Table A-V/2-2 of the STCW Code</strong> relating to the minimum standard of competence in passenger ship crisis management and human behavior.</p>
 <p>This course provides mandatory minimum standards of competence in Passenger Ship Crisis Management and Human Behavior Training in accordance with the provisions of <strong>Section A-V/2, paragraph 4 and Table A-V/2-2 of the STCW Code</strong>.</p>
-</div>', 1, 1, NOW()),
+</div>', 1, 'published', NOW()),
 
 (203, 'Organize Shipboard Emergency Procedures', '<div class="lesson-content">
 <h2>1. Organize Shipboard Emergency Procedures</h2>
@@ -117,7 +117,7 @@ INSERT INTO lms_lessons (course_id, title, content, order_num, is_active, create
 <p>All personnel must be aware of and adhere to pre-planned emergency procedures as carefully as possible. In escalating incidents, prioritization and delegation are key.</p>
 <img src="https://pamel.edu.pa/uploads/pshb/image2.jpeg" alt="Crew muster list and crew emergency plan" style="max-width:100%;margin-top:1.5rem;">
 <p><em>Figure 2 - Crew muster list and crew emergency plan</em></p>
-</div>', 2, 1, NOW()),
+</div>', 2, 'published', NOW()),
 
 (203, 'Optimize the Use of Resources', '<div class="lesson-content">
 <h2>2. Optimize the Use of Resources</h2>
@@ -158,7 +158,7 @@ INSERT INTO lms_lessons (course_id, title, content, order_num, is_active, create
 <li><strong>Record-keeping:</strong> A dedicated log keeper (scribe) records time, decisions, instructions, and situation reports.</li>
 <li><strong>Lifeboats and Liferafts:</strong> Abandonment is an executive order based on vessel habitability. Factors include trim (up to 10°) and list (up to 20°).</li>
 </ul>
-</div>', 3, 1, NOW()),
+</div>', 3, 'published', NOW()),
 
 (203, 'Control Response to Emergencies', '<div class="lesson-content">
 <h2>3. Control Response to Emergencies</h2>
@@ -195,7 +195,7 @@ INSERT INTO lms_lessons (course_id, title, content, order_num, is_active, create
 <li>Take "time outs" to decompress.</li>
 <li>Practice relaxation techniques (deep breathing, meditation, stretching).</li>
 </ul>
-</div>', 4, 1, NOW()),
+</div>', 4, 'published', NOW()),
 
 (203, 'Control Passengers and Other Personnel During Emergency Situations', '<div class="lesson-content">
 <h2>4. Control Passengers and Other Personnel During Emergency Situations</h2>
@@ -244,7 +244,7 @@ INSERT INTO lms_lessons (course_id, title, content, order_num, is_active, create
 <li>Over 14 years: More likely to show fear, behave like adults.</li>
 </ul>
 <p><strong>Roll Call:</strong> A powerful tool to establish authority, identify capable individuals, utilize skills, record injuries, assess mental state, and reassure individuals. Repeat roll calls for reassurance.</p>
-</div>', 5, 1, NOW()),
+</div>', 5, 'published', NOW()),
 
 (203, 'Establish and Maintain Effective Communications', '<div class="lesson-content">
 <h2>5. Establish and Maintain Effective Communications</h2>
@@ -283,7 +283,7 @@ INSERT INTO lms_lessons (course_id, title, content, order_num, is_active, create
 <li>Assess and improve teaching effectiveness.</li>
 </ul>
 <p>Upon successful completion of the examination, the trainee will be awarded the relevant course completion certificate issued by the training center.</p>
-</div>', 6, 1, NOW());
+</div>', 6, 'published', NOW());
 
 -- ============================================================
 -- QUIZ
@@ -294,7 +294,7 @@ INSERT INTO lms_quizzes (course_id, title, description, pass_percentage, time_li
 
 SET @qid = LAST_INSERT_ID();
 
-INSERT INTO lms_questions (quiz_id, question, type, order_num, created_at) VALUES
+INSERT INTO lms_questions (quiz_id, question_text, question_type, order_num, created_at) VALUES
 (@qid, 'Which maritime disasters led to the inclusion of crisis management training requirements in the 1995 STCW Convention amendment?', 'multiple_choice', 1, NOW()),
 (@qid, 'What does the Central Command Team (CCT) do when a vessel incident cannot be contained?', 'multiple_choice', 2, NOW()),
 (@qid, 'Which of the following is an example of Environmental Containment during an onboard emergency?', 'multiple_choice', 3, NOW()),

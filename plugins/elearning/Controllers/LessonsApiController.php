@@ -121,6 +121,69 @@ class LessonsApiController extends Controller
         $this->apiResponse(['status' => 'success', 'message' => 'Lección eliminada']);
     }
 
+    /**
+     * POST /api/v1/lessons
+     * Creates a new lesson. Requires auth.
+     */
+    public function store()
+    {
+        $userId = ApiToken::fromRequest();
+        if ($userId === false) {
+            $this->apiResponse(['status' => 'error', 'message' => 'Autenticación requerida'], 401);
+        }
+
+        $body = json_decode(file_get_contents('php://input'), true) ?? [];
+        if (empty($body['course_id']) || empty($body['title'])) {
+            $this->apiResponse(['status' => 'error', 'message' => 'Faltan datos requeridos'], 400);
+        }
+
+        $data = [
+            'course_id' => (int) $body['course_id'],
+            'title'     => $body['title'] ?? '',
+            'content'   => $body['content'] ?? '',
+            'video_url' => $body['video_url'] ?? '',
+            'file_path' => $body['file_path'] ?? '',
+            'type'      => $body['type'] ?? 'text',
+            'order_num' => (int) ($body['order_num'] ?? 0),
+            'duration'  => (int) ($body['duration'] ?? 0),
+            'is_active' => 1,
+            'created_at'=> date('Y-m-d H:i:s'),
+        ];
+
+        $this->lessonModel->create($data);
+        $this->apiResponse(['status' => 'success', 'message' => 'Lección creada']);
+    }
+
+    /**
+     * POST /api/v1/lessons/{id}/update
+     * Updates an existing lesson. Requires auth.
+     */
+    public function update($id)
+    {
+        $userId = ApiToken::fromRequest();
+        if ($userId === false) {
+            $this->apiResponse(['status' => 'error', 'message' => 'Autenticación requerida'], 401);
+        }
+
+        $lesson = $this->lessonModel->find((int) $id);
+        if (!$lesson) {
+            $this->apiResponse(['status' => 'error', 'message' => 'Lección no encontrada'], 404);
+        }
+
+        $body = json_decode(file_get_contents('php://input'), true) ?? [];
+        $data = [];
+        $fillable = ['title', 'content', 'video_url', 'file_path', 'type', 'order_num', 'duration'];
+        foreach ($fillable as $field) {
+            if (isset($body[$field])) {
+                $data[$field] = $body[$field];
+            }
+        }
+        $data['updated_at'] = date('Y-m-d H:i:s');
+
+        $this->lessonModel->update((int) $id, $data);
+        $this->apiResponse(['status' => 'success', 'message' => 'Lección actualizada']);
+    }
+
     private function apiResponse(array $data, int $code = 200): void
     {
         header('Content-Type: application/json');
