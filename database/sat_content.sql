@@ -5,7 +5,7 @@ UPDATE lms_courses SET
     course_code = 'PAM-MAE-SAT-62',
     title       = 'Security Awareness Training for All Seafarers',
     status      = 'published',
-    image       = '/uploads/sat/image1.jpeg'
+    image = 'https://pamel.edu.pa/uploads/sat/image1.jpeg'
 WHERE id = 204;
 
 DELETE FROM lms_lessons WHERE course_id = 204;
@@ -15,12 +15,12 @@ LEFT JOIN lms_questions qq ON qq.quiz_id = q.id
 LEFT JOIN lms_question_options qo ON qo.question_id = qq.id
 WHERE q.course_id = 204;
 
--- ─── LESSONS ────────────────────────────────────────────────────────────────
+-- â”€â”€â”€ LESSONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 INSERT INTO lms_lessons (course_id, title, content, type, duration, order_num) VALUES
 
 (204, 'Introduction', '<h2>Introduction</h2>
-<img src="/uploads/sat/image1.jpeg" alt="Security Awareness Training for All Seafarers" style="max-width:100%;margin-bottom:1rem;">
+<img src="https://pamel.edu.pa/uploads/sat/image1.jpeg" alt="Security Awareness Training for All Seafarers" style="max-width:100%;margin-bottom:1rem;">
 <h3>Course Overview</h3>
 <p>As with other training courses the starting point should be a brief statement of the purpose of the course, a short review of the timeline, an introduction of participants, determination of knowledge and experience levels, and a brief description of the teaching facility.</p>
 <h3>Competencies to Be Achieved</h3>
@@ -39,12 +39,12 @@ INSERT INTO lms_lessons (course_id, title, content, type, duration, order_num) V
 <h3>Awareness of Relevant International Conventions, Codes, and Recommendations</h3>
 <p>The International Maritime Organization (IMO) has adopted a number of resolutions and conventions to minimize threats to security in maritime transportation, including:</p>
 <ul>
-<li><strong>Resolution A.545(13)</strong> – Measures To Prevent Acts Of Piracy And Armed Robbery Against Ships (1983)</li>
-<li><strong>Resolution A.584(14)</strong> – Measures To Prevent Unlawful Acts Which Threaten Safety Of Ships And Security Of Passengers (1985, reviewed 2001)</li>
-<li><strong>MSC/Circ.443</strong> – Measures To Prevent Unlawful Acts Against Passengers And Crew On Board Ships (1986)</li>
-<li><strong>SUA Convention (1988)</strong> – Convention for the Suppression of Unlawful Acts against the Safety of Maritime Navigation; entered into force March 1, 1992. Obliges contracting governments either to extradite or prosecute alleged offenders.</li>
+<li><strong>Resolution A.545(13)</strong> â€“ Measures To Prevent Acts Of Piracy And Armed Robbery Against Ships (1983)</li>
+<li><strong>Resolution A.584(14)</strong> â€“ Measures To Prevent Unlawful Acts Which Threaten Safety Of Ships And Security Of Passengers (1985, reviewed 2001)</li>
+<li><strong>MSC/Circ.443</strong> â€“ Measures To Prevent Unlawful Acts Against Passengers And Crew On Board Ships (1986)</li>
+<li><strong>SUA Convention (1988)</strong> â€“ Convention for the Suppression of Unlawful Acts against the Safety of Maritime Navigation; entered into force March 1, 1992. Obliges contracting governments either to extradite or prosecute alleged offenders.</li>
 </ul>
-<p>Following September 11, 2001, the IMO developed new maritime security measures adopted at the Diplomatic Conference of December 2002. These amendments to SOLAS 74 entered into force on <strong>July 1, 2004</strong>, introducing Chapter XI-2 Regulations 1–13 and the ISPS Code.</p>
+<p>Following September 11, 2001, the IMO developed new maritime security measures adopted at the Diplomatic Conference of December 2002. These amendments to SOLAS 74 entered into force on <strong>July 1, 2004</strong>, introducing Chapter XI-2 Regulations 1â€“13 and the ISPS Code.</p>
 <h3>Awareness of Relevant Government Legislation and Regulations</h3>
 <p>Some governments have acted on a national level to produce legislation concerned with maritime security. Examples include the Maritime Transportation Security Act of 2002 (MTSA 2002) and the Customs-Trade Partnership Against Terrorism (C-TPAT).</p>
 <h3>Definitions</h3>
@@ -66,11 +66,11 @@ INSERT INTO lms_lessons (course_id, title, content, type, duration, order_num) V
 <p>The Port Facility is defined in SOLAS Chapter XI-2 Regulation 1 part 1.9 and is the location where a ship/port interface takes place. Numerous duties and activities are assigned to the Port Facility in maintaining maritime security.</p>
 <h3>Key Security Personnel</h3>
 <ul>
-<li><strong>Ship Security Officer (SSO)</strong> – Person on board the ship responsible for implementing the Ship Security Plan and liaising with the CSO and PFSO</li>
-<li><strong>Company Security Officer (CSO)</strong> – Person designated by the company to develop, implement, and maintain the Ship Security Plan</li>
-<li><strong>Port Facility Security Officer (PFSO)</strong> – Person responsible for development and implementation of the Port Facility Security Plan</li>
-<li><strong>Seafarers with designated security duties</strong> – Crew members assigned specific security responsibilities under the Ship Security Plan</li>
-<li><strong>Port facility personnel with designated security duties</strong> – Port workers with specific security roles under the Port Facility Security Plan</li>
+<li><strong>Ship Security Officer (SSO)</strong> â€“ Person on board the ship responsible for implementing the Ship Security Plan and liaising with the CSO and PFSO</li>
+<li><strong>Company Security Officer (CSO)</strong> â€“ Person designated by the company to develop, implement, and maintain the Ship Security Plan</li>
+<li><strong>Port Facility Security Officer (PFSO)</strong> â€“ Person responsible for development and implementation of the Port Facility Security Plan</li>
+<li><strong>Seafarers with designated security duties</strong> â€“ Crew members assigned specific security responsibilities under the Ship Security Plan</li>
+<li><strong>Port facility personnel with designated security duties</strong> â€“ Port workers with specific security roles under the Port Facility Security Plan</li>
 </ul>
 <p>Trainees should understand the role of each of these persons and know what to expect from each in terms of authority and responsibility. The ISPS Code Parts A and B clearly delineate the functions, duties, and training requirements for each category.</p>', 'text', 60, 3),
 
@@ -102,15 +102,15 @@ INSERT INTO lms_lessons (course_id, title, content, type, duration, order_num) V
 <p>Trainees should be cautioned that no security equipment or measure is infallible. Known techniques to evade security systems include disabling alarm systems, picking of locks, jamming of radio signals, and other methods.</p>', 'text', 60, 4),
 
 (204, 'Ship Security Actions', '<h2>Ship Security Actions</h2>
-<p>This section covers material that both the Ship Security Officer and the Company Security Officer should be very familiar with. Parts A and B of the ISPS Code are helpful in organizing this material — this is where ideas, plans, and preparation turn into actions and procedures.</p>
+<p>This section covers material that both the Ship Security Officer and the Company Security Officer should be very familiar with. Parts A and B of the ISPS Code are helpful in organizing this material â€” this is where ideas, plans, and preparation turn into actions and procedures.</p>
 <h3>Actions Required by Different Security Levels</h3>
 <p>Different types of security measures apply depending on whether ships are at sea or in port, and on the current security level. The three security levels are:</p>
 <ul>
-<li><strong>Security Level 1 (Normal)</strong> – Minimum appropriate protective security measures maintained at all times</li>
-<li><strong>Security Level 2 (Heightened)</strong> – Additional protective security measures maintained for a period of time due to increased risk of a security incident</li>
-<li><strong>Security Level 3 (Exceptional)</strong> – Further specific protective security measures maintained for a limited period when a security incident is probable or imminent</li>
+<li><strong>Security Level 1 (Normal)</strong> â€“ Minimum appropriate protective security measures maintained at all times</li>
+<li><strong>Security Level 2 (Heightened)</strong> â€“ Additional protective security measures maintained for a period of time due to increased risk of a security incident</li>
+<li><strong>Security Level 3 (Exceptional)</strong> â€“ Further specific protective security measures maintained for a limited period when a security incident is probable or imminent</li>
 </ul>
-<p>Trainees may benefit from an in-class creation of a checklist detailing the appropriate generic actions given various conditions and security levels. Participants are not expected to acquire detailed technical knowledge of security equipment — the objective is familiarity with capabilities and appropriate deployment of such devices and systems.</p>
+<p>Trainees may benefit from an in-class creation of a checklist detailing the appropriate generic actions given various conditions and security levels. Participants are not expected to acquire detailed technical knowledge of security equipment â€” the objective is familiarity with capabilities and appropriate deployment of such devices and systems.</p>
 <h3>Reporting Security Incidents</h3>
 <p>All security incidents must be reported in accordance with specific reporting requirements. Trainees should understand the proper procedures for reporting incidents to ensure appropriate action is taken promptly. Instructors are encouraged to provide sample security incidents and have trainees explain how they would report these incidents.</p>', 'text', 45, 5),
 
@@ -145,10 +145,10 @@ INSERT INTO lms_lessons (course_id, title, content, type, duration, order_num) V
 <h3>Evaluation</h3>
 <p>Upon successful completion of the examination carried out during and at the end of the course, the trainee will be awarded the relevant course completion certificate issued by the training center.</p>', 'text', 45, 6);
 
--- ─── QUIZ ───────────────────────────────────────────────────────────────────
+-- â”€â”€â”€ QUIZ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 INSERT INTO lms_quizzes (course_id, title, description, pass_percentage, time_limit)
-VALUES (204, 'Security Awareness Training – Final Exam', 'Final examination for Security Awareness Training for All Seafarers (PAM-MAE-SAT-62)', 70, 60);
+VALUES (204, 'Security Awareness Training â€“ Final Exam', 'Final examination for Security Awareness Training for All Seafarers (PAM-MAE-SAT-62)', 70, 60);
 
 SET @quiz_id = LAST_INSERT_ID();
 
@@ -333,3 +333,4 @@ INSERT INTO lms_question_options (question_id, option_text, is_correct, order_nu
 (@q20, '18 months', 1, 2),
 (@q20, '12 months with no exceptions', 0, 3),
 (@q20, '24 months', 0, 4);
+
