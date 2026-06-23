@@ -110,6 +110,14 @@ return function($router) {
     $router->post('/manager/lms/categories/store', 'Plugins\Elearning\Controllers\AdminCategoryController@store', 'admin.lms.categories.store');
     $router->post('/manager/lms/categories/:id/delete', 'Plugins\Elearning\Controllers\AdminCategoryController@delete', 'admin.lms.categories.delete');
 
+    // LMS Forums
+    $router->get('/manager/lms/forums', 'Plugins\Elearning\Controllers\AdminForumController@index', 'admin.lms.forums');
+    $router->post('/manager/lms/forums/store', 'Plugins\Elearning\Controllers\AdminForumController@store', 'admin.lms.forums.store');
+    $router->post('/manager/lms/forums/:id/toggle', 'Plugins\Elearning\Controllers\AdminForumController@toggle', 'admin.lms.forums.toggle');
+    $router->post('/manager/lms/forums/:id/delete', 'Plugins\Elearning\Controllers\AdminForumController@delete', 'admin.lms.forums.delete');
+    $router->post('/manager/lms/forums/topics/:id/delete', 'Plugins\Elearning\Controllers\AdminForumController@deleteTopic', 'admin.lms.forums.topics.delete');
+    $router->post('/manager/lms/forums/posts/:id/delete', 'Plugins\Elearning\Controllers\AdminForumController@deletePost', 'admin.lms.forums.posts.delete');
+
     // LMS Students / Enrollments
     $router->get('/manager/lms/students', 'Plugins\Elearning\Controllers\AdminEnrollmentController@index', 'admin.lms.students');
     $router->get('/manager/lms/students/create', 'Plugins\Elearning\Controllers\AdminEnrollmentController@create', 'admin.lms.students.create');

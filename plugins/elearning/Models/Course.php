@@ -135,11 +135,32 @@ class Course extends Model
         );
 
         $quizzes = $this->db->fetchAll(
-            "SELECT * FROM lms_quizzes WHERE course_id = ? ORDER BY created_at ASC",
+            "SELECT * FROM lms_quizzes WHERE course_id = ? AND (lesson_id IS NULL OR lesson_id = 0) ORDER BY created_at ASC",
             [$courseId]
         );
 
-        return ['lessons' => $lessons, 'quizzes' => $quizzes];
+        // Lesson-level quizzes with questions+options, keyed by lesson_id
+        $rawLessonQuizzes = $this->db->fetchAll(
+            "SELECT * FROM lms_quizzes WHERE course_id = ? AND lesson_id > 0 ORDER BY created_at ASC",
+            [$courseId]
+        );
+        $lessonQuizzes = [];
+        foreach ($rawLessonQuizzes as &$lq) {
+            $qs = $this->db->fetchAll(
+                "SELECT * FROM lms_questions WHERE quiz_id = ? ORDER BY order_num ASC, id ASC",
+                [$lq['id']]
+            );
+            foreach ($qs as &$q) {
+                $q['options'] = $this->db->fetchAll(
+                    "SELECT * FROM lms_question_options WHERE question_id = ? ORDER BY order_num ASC",
+                    [$q['id']]
+                );
+            }
+            $lq['questions']                 = $qs;
+            $lessonQuizzes[$lq['lesson_id']] = $lq;
+        }
+
+        return ['lessons' => $lessons, 'quizzes' => $quizzes, 'lesson_quizzes' => $lessonQuizzes];
     }
 
     /**

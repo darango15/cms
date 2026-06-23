@@ -9,13 +9,24 @@ class Quiz extends Model
     protected $table = 'lms_quizzes';
 
     /**
-     * Get all quizzes for a course.
+     * Get course-level quizzes (not attached to a specific lesson).
      */
     public function byCourse($courseId)
     {
         return $this->db->fetchAll(
-            "SELECT * FROM {$this->table} WHERE course_id = ? ORDER BY created_at ASC",
+            "SELECT * FROM {$this->table} WHERE course_id = ? AND (lesson_id IS NULL OR lesson_id = 0) ORDER BY created_at ASC",
             [$courseId]
+        );
+    }
+
+    /**
+     * Get the quiz (with questions+options) attached to a specific lesson, or false.
+     */
+    public function findByLesson($lessonId)
+    {
+        return $this->db->fetchOne(
+            "SELECT * FROM {$this->table} WHERE lesson_id = ? LIMIT 1",
+            [(int) $lessonId]
         );
     }
 

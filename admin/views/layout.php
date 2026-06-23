@@ -70,6 +70,7 @@
             <a href="/manager/lms/students"  class="nav-link"><i class="fas fa-user-graduate w-4 text-center"></i>Estudiantes</a>
             <a href="/manager/lms/quizzes"   class="nav-link"><i class="fas fa-vial-circle-check w-4 text-center"></i>Quizzes</a>
             <a href="/manager/lms/categories" class="nav-link"><i class="fas fa-tags w-4 text-center"></i>Categorías LMS</a>
+            <a href="/manager/lms/forums"    class="nav-link"><i class="fas fa-comments w-4 text-center"></i>Foros</a>
 
             <div class="nav-section">Comercio</div>
             <a href="/manager/products"    class="nav-link"><i class="fas fa-box-archive w-4 text-center"></i>Productos</a>

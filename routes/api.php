@@ -64,7 +64,20 @@ return function ($router) {
     $router->post('/api/v1/quizzes/:id/start',                          'Plugins\Elearning\Controllers\QuizzesApiController@startAttempt',      'api.v1.quizzes.start');
     $router->post('/api/v1/quizzes/:id/attempts/:attemptId/grade',      'Plugins\Elearning\Controllers\QuizzesApiController@gradeAttempt',      'api.v1.quizzes.grade');
     $router->post('/api/v1/quizzes/:id/questions',                      'Plugins\Elearning\Controllers\QuizzesApiController@storeQuestion',     'api.v1.quizzes.questions.store');
+    $router->get('/api/v1/lessons/:id/quiz',                              'Plugins\Elearning\Controllers\QuizzesApiController@lessonQuiz',       'api.v1.lessons.quiz');
+    $router->post('/api/v1/questions/:id/delete',                       'Plugins\Elearning\Controllers\QuizzesApiController@deleteQuestion',    'api.v1.questions.delete');
     $router->get('/api/v1/quiz-attempts/:attemptId',                    'Plugins\Elearning\Controllers\QuizzesApiController@attempt',           'api.v1.quiz-attempts.show');
+
+    // ── Forums ────────────────────────────────────────────────────────────────
+    $router->get('/api/v1/courses/:id/forum',        'Plugins\Elearning\Controllers\ForumsApiController@courseTopics',      'api.v1.courses.forum');
+    $router->post('/api/v1/courses/:id/forum',       'Plugins\Elearning\Controllers\ForumsApiController@storeCourseTopics', 'api.v1.courses.forum.store');
+    $router->get('/api/v1/forums',                  'Plugins\Elearning\Controllers\ForumsApiController@index',       'api.v1.forums');
+    $router->get('/api/v1/forums/:slug',             'Plugins\Elearning\Controllers\ForumsApiController@show',        'api.v1.forums.show');
+    $router->get('/api/v1/topics/:id',               'Plugins\Elearning\Controllers\ForumsApiController@showTopic',   'api.v1.topics.show');
+    $router->post('/api/v1/topics',                  'Plugins\Elearning\Controllers\ForumsApiController@storeTopic',  'api.v1.topics.store');
+    $router->post('/api/v1/topics/:id/reply',        'Plugins\Elearning\Controllers\ForumsApiController@storePost',   'api.v1.topics.reply');
+    $router->post('/api/v1/topics/:id/delete',       'Plugins\Elearning\Controllers\ForumsApiController@deleteTopic', 'api.v1.topics.delete');
+    $router->post('/api/v1/posts/:id/delete',        'Plugins\Elearning\Controllers\ForumsApiController@deletePost',  'api.v1.posts.delete');
 
     // ── Users ─────────────────────────────────────────────────────────────────
     $router->get('/api/v1/users/count',      'Controllers\UsersApiController@count', 'api.v1.users.count');

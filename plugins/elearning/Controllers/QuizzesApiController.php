@@ -35,14 +35,19 @@ class QuizzesApiController extends Controller
             $this->apiResponse(['status' => 'error', 'message' => 'course_id y title son requeridos'], 400);
         }
 
-        $id = $this->db->insert('lms_quizzes', [
+        $row = [
             'course_id'       => (int) $data['course_id'],
             'title'           => trim($data['title']),
             'description'     => $data['description'] ?? '',
             'pass_percentage' => (float) ($data['pass_percentage'] ?? 70),
             'time_limit'      => (int) ($data['time_limit'] ?? 0),
             'is_active'       => 1,
-        ]);
+        ];
+        if (!empty($data['lesson_id'])) {
+            $row['lesson_id'] = (int) $data['lesson_id'];
+        }
+
+        $id = $this->db->insert('lms_quizzes', $row);
 
         if (!$id) {
             $this->apiResponse(['status' => 'error', 'message' => 'Error al crear quiz'], 500);
@@ -254,6 +259,36 @@ class QuizzesApiController extends Controller
         }
 
         $this->apiResponse(['status' => 'success', 'data' => ['id' => $qId]], 201);
+    }
+
+    /**
+     * GET /api/v1/lessons/{id}/quiz
+     * Returns the quiz (with questions+options) attached to the lesson, or null.
+     */
+    public function lessonQuiz($id)
+    {
+        $quiz = $this->quizModel->findByLesson((int) $id);
+        if (!$quiz) {
+            $this->apiResponse(['status' => 'success', 'data' => null]);
+        }
+        $full = $this->quizModel->withQuestionsAndOptions((int) $quiz['id']);
+        $this->apiResponse(['status' => 'success', 'data' => $full ?: $quiz]);
+    }
+
+    /**
+     * POST /api/v1/questions/:id/delete
+     */
+    public function deleteQuestion($id)
+    {
+        $userId = ApiToken::fromRequest();
+        if ($userId === false) {
+            $this->apiResponse(['status' => 'error', 'message' => 'Autenticación requerida'], 401);
+        }
+
+        $this->db->execute('DELETE FROM lms_question_options WHERE question_id = ?', [(int) $id]);
+        $this->db->execute('DELETE FROM lms_questions WHERE id = ?', [(int) $id]);
+
+        $this->apiResponse(['status' => 'success', 'message' => 'Pregunta eliminada']);
     }
 
     private function apiResponse(array $data, int $code = 200): void
